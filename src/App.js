@@ -1,11 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import Topbar from "./scenes/global/Topbar";
 import Sidebar from "./scenes/global/Sidebar";
 import Dashboard from "./scenes/dashboard";
 import Team from "./scenes/team";
-import Invoices from "./scenes/invoices";
-import Contacts from "./scenes/contacts";
 import Bar from "./scenes/bar";
 import Form from "./scenes/form";
 import Line from "./scenes/line";
@@ -15,30 +13,34 @@ import Geography from "./scenes/geography";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 import Calendar from "./scenes/calendar/calendar";
-import SignUp from "./scenes/Forms/Signup/SignupPage";
-
-import LoginForm from "./scenes/Forms/Login/Login";
-import LoginForms from "./scenes/Forms/Login/Login";
+import Home from "./pages/Home";
+import Account from "./pages/Account";
+import { getMe } from "./apiCalls/userApis";
+import { useDispatch, useSelector } from "react-redux";
+import Space from "./components/spaces/Space";
+import List from "./components/spaces/list/List";
+import Board from "./components/spaces/board/Board";
 
 function App() {
-  const [theme, colorMode] = useMode();
-  const [isSidebar, setIsSidebar] = useState(true);
+  const dispatch = useDispatch()
+  const {user} = useSelector(state=>state.user)
+  console.log(user)
+  useEffect(()=>{
+       getMe(dispatch)
+  }, [dispatch])
 
   return (
-    <ColorModeContext.Provider value={colorMode}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <div className="app">
-          <Sidebar isSidebar={isSidebar} />
-          <main className="content">
-            <Topbar setIsSidebar={setIsSidebar} />
+        <div>
             <Routes>
-            {/* <Route path="/" element={<LoginForms />} /> */}
-            <Route   path="/"  >
+              {
+                // user &&
+                <Route   path="/" element={user ?<Home /> : <Account />} >
               <Route index  element={<Dashboard />} />
               <Route path="team" element={<Team />} />
-              <Route path="contacts" element={<Contacts />} />
-              <Route path="invoices" element={<Invoices />} />
+              <Route path="space/:id" element={<Space />}>
+                <Route path="list" element={<List />} />
+                <Route path="board" element={<Board />} />
+              </Route>
               <Route path="form" element={<Form />} />
               <Route path="bar" element={<Bar />} />
               <Route path="pie" element={<Pie />} />
@@ -47,15 +49,11 @@ function App() {
               <Route path="calendar" element={<Calendar />} />
               <Route path="geography" element={<Geography />} />
             </Route>
-            
-
+            }
+              <Route path="*" element={<h1>path not found</h1>}/>
+            { <Route path="/account" element={<Account />} />}
             </Routes>
-
-
-          </main>
         </div>
-      </ThemeProvider>
-    </ColorModeContext.Provider>
   );
 }
 

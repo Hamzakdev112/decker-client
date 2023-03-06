@@ -1,34 +1,34 @@
 import { useState } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
-import { Box, IconButton, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
 import { tokens } from "../../theme";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
-import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
-import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
-import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
-import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
-import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
-import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { useSelector } from "react-redux";
+import axios from "axios";
+import { SERVER_URL } from "../../config/config";
+import { getMe } from "../../apiCalls/userApis";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
+
+
   const colors = tokens(theme.palette.mode);
   return (
     <MenuItem
       active={selected === title}
       style={{
-        color: colors.grey[100],
+        color: '#494949',
       }}
       onClick={() => setSelected(title)}
       icon={icon}
-    >
+      >
       <Typography>{title}</Typography>
       <Link to={to} />
     </MenuItem>
@@ -36,14 +36,26 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
 };
 
 const Sidebar = () => {
+  const {mySpaces} = useSelector(state=>state.spaces)
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
-
+  const handleLogout = async()=>{
+    try{
+      const {data} = await axios.get(`${SERVER_URL}/api/users/logout`, {
+        withCredentials:true
+      })
+      window.location.reload()
+    }catch(err){
+      console.log(err)
+    }
+  }
   return (
     <Box
-      sx={{
+      sx={
+        {
+          height:'100%',
         "& .pro-sidebar-inner": {
           background: `${colors.primary[400]} !important`,
         },
@@ -69,23 +81,16 @@ const Sidebar = () => {
             icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
             style={{
               margin: "10px 0 20px 0",
-              color: colors.grey[100],
+              color: '#6e6e6e',
             }}
           >
             {!isCollapsed && (
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                ml="15px"
-              >
-                <Typography variant="h3" color={colors.grey[100]}>
-                  Clickup
-                </Typography>
-                <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
-                  <MenuOutlinedIcon />
-                </IconButton>
-              </Box>
+              <div className="flex justify-center ">
+                <h1 className="text-[1.5em]">MONSTER</h1>
+                <button className="absolute right-[-1px] top-0 flex justify-center items-center w-[30px] h-[30px]"  onClick={() => setIsCollapsed(!isCollapsed)}>
+                  <CancelOutlinedIcon  />
+                </button>
+              </div>
             )}
           </MenuItem>
 
@@ -101,17 +106,6 @@ const Sidebar = () => {
                 /> */}
               </Box>
               <Box textAlign="center">
-                <Typography
-                  variant="h2"
-                  color={colors.grey[100]}
-                  fontWeight="bold"
-                  sx={{ m: "10px 0 0 0" }}
-                >
-                  Daily Task
-                </Typography>
-                <Typography variant="h5" color={colors.greenAccent[500]}>
-                  
-                </Typography>
               </Box>
             </Box>
           )}
@@ -130,94 +124,45 @@ const Sidebar = () => {
               color={colors.grey[300]}
               sx={{ m: "15px 0 5px 20px" }}
             >
-              Data
+              Spaces
             </Typography>
             <Item
-              title="Manage Team"
+              title="Create Space"
               to="/team"
-              icon={<PeopleOutlinedIcon />}
+              icon={<AddCircleOutlineOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
-            <Item
-              title="Contacts Information"
-              to="/contacts"
-              icon={<ContactsOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Invoices Balances"
-              to="/invoices"
-              icon={<ReceiptOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+            {
+              mySpaces?.map((space)=>(
+                <Item
+                title={space.name}
+                to={`/space/${space._id}/list`}
+                icon={<img src="/assets/images.png" />}
+                selected={selected}
+                setSelected={setSelected}
+                />
+                ))
+              }
 
             <Typography
               variant="h6"
               color={colors.grey[300]}
               sx={{ m: "15px 0 5px 20px" }}
             >
-              Pages
+              Account
             </Typography>
             <Item
-              title="Profile Form"
-              to="/form"
+              title="Profile"
+              to="/profile"
               icon={<PersonOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
-            <Item
-              title="Calendar"
-              to="/calendar"
-              icon={<CalendarTodayOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="FAQ Page"
-              to="/faq"
-              icon={<HelpOutlineOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-
-            <Typography
-              variant="h6"
-              color={colors.grey[300]}
-              sx={{ m: "15px 0 5px 20px" }}
-            >
-              Charts
-            </Typography>
-            <Item
-              title="Bar Chart"
-              to="/bar"
-              icon={<BarChartOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Pie Chart"
-              to="/pie"
-              icon={<PieChartOutlineOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Line Chart"
-              to="/line"
-              icon={<TimelineOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Geography Chart"
-              to="/geography"
-              icon={<MapOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+            <button
+            className="ml-[27px] text-[#4d4d4d] flex gap-3"
+            onClick={handleLogout}
+            > <LogoutIcon />LOGOUT</button>
           </Box>
         </Menu>
       </ProSidebar>

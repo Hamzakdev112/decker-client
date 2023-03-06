@@ -1,4 +1,3 @@
-import { Box, IconButton, useTheme } from "@mui/material";
 import { useContext } from "react";
 import { ColorModeContext, tokens } from "../../theme";
 import InputBase from "@mui/material/InputBase";
@@ -8,46 +7,36 @@ import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import SearchIcon from "@mui/icons-material/Search";
+import { Link, NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Topbar = () => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-  const colorMode = useContext(ColorModeContext);
+  const {singleSpace} = useSelector(state=>state.spaces)
 
   return (
-    <Box display="flex" justifyContent="space-between" p={2}>
-    
-      <Box
-        display="flex"
-        backgroundColor={colors.primary[400]}
-        borderRadius="3px"
-      >
-        <InputBase sx={{ ml: 2, flex: 1 }} placeholder="Search" />
-        <IconButton type="button" sx={{ p: 1 }}>
-          <SearchIcon />
-        </IconButton>
-      </Box>
-
-  
-      <Box display="flex">
-        <IconButton onClick={colorMode.toggleColorMode}>
-          {theme.palette.mode === "dark" ? (
-            <DarkModeOutlinedIcon />
-          ) : (
-            <LightModeOutlinedIcon />
-          )}
-        </IconButton>
-        <IconButton>
+    <div className="border-b-[1px] border-[#e0e0e0] p-4 flex w-[100%] h-[70px]" >
+      <div  className="flex w-[100%] h-[100%] items-center justify-between">
+    <div className="flex justify-center gap-2 items-center">
+      <img src="/assets/images.png" className=" w-[60px]" alt="" />
+      <span>{singleSpace?.name}</span>
+    </div>
+    <div className="flex gap-[20px]">
+      <NavLink to={`/space/${singleSpace?._id}/list`}>List</NavLink>
+      <NavLink to={`/space/${singleSpace?._id}/board`}>Board</NavLink>
+    </div>
+    <div>
+        <button className="w-[50px]" >
           <NotificationsOutlinedIcon />
-        </IconButton>
-        <IconButton>
+        </button>
+        <button className="w-[50px]" >
           <SettingsOutlinedIcon />
-        </IconButton>
-        <IconButton>
+        </button>
+        <Link to="/account" className="w-[50px]" >
           <PersonOutlinedIcon />
-        </IconButton>
-      </Box>
-    </Box>
+        </Link>
+            </div>
+      </div>
+    </div>
   );
 };
 
