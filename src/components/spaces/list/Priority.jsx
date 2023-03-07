@@ -33,7 +33,6 @@ const PriorityModal = ({ taskId, setOpenPriority, currentValue }) => {
   };
   return (
     <div
-      // ref={ref}
       className={`absolute mt-[10px] boxshadow p-3 items-start overflow-auto w-[auto] min-h-[100px] whitespace-nowrap  rounded-[5px]   flex-col z-10 bg-white gap-10`}
     >
       <div

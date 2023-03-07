@@ -1,20 +1,29 @@
 import axios from 'axios'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 import { SERVER_URL } from '../../../config/config'
 import { updateName } from '../../../redux/slices/taskSlice'
 import { Input } from '@mui/material';
+import { useRef } from 'react'
+import { handleClickOutSide } from '../../../services/functions'
 
 
 const EditName = ({ value, taskId, setEditName}) => {
 const dispatch = useDispatch()
+const nameRef = useRef()
+useEffect(()=>{
+  handleClickOutSide(nameRef, ()=>setEditName(false))
+}, [nameRef])
 const [newName, setNewName] = useState('')
-
-const handleSubmit = async (e)=>{
-    e.preventDefault()
-    setEditName(false)
+const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      buttonRef.current.click();
+    }
+  };
+    const handleSubmit = async ()=>{
+        setEditName(false)
     dispatch(updateName({name: newName, id:taskId}))
     const {data} = await toast.promise(
         axios.put(
@@ -26,26 +35,26 @@ const handleSubmit = async (e)=>{
                 pending: 'Updating',
                 success: 'Name Changed',
                 error: 'Error Occured'
-              },
-              {autoClose:2000}
-      
-    )
-
-
-}
-
+            },
+            {autoClose:2000}
+            )
+        }
+        const buttonRef = useRef(null);
 
   return (
-    <form onSubmit={handleSubmit} action="">
+    <>
  <input
+ ref={nameRef}
+ onKeyPress={handleKeyPress}
+ onKeyDown={(event)=>event.stopPropagation()}
  type='text'
-  onChange={(e)=>setNewName(e.target.value)}
-  autoFocus
-  className=" focus:outline-none  rounded-[5px] p-1" 
-  defaultChecked defaultValue={value} 
+ onChange={(e)=>setNewName(e.target.value)}
+ autoFocus
+ className="text-[#6884f7] focus:outline-none rounded-[5px] p-1" 
+ defaultChecked defaultValue={value} 
   />
-
-    </form>
+  <button ref={buttonRef} onClick={handleSubmit} type='submit' className='text-[black]'></button>
+ </>
 
   )
 }

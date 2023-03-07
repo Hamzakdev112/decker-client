@@ -10,6 +10,7 @@ import { useState } from "react";
 import { useRef } from "react";
 import { setAddColumnOpen } from "../../redux/slices/spaceSlice";
 import AddColumn from "./list/AddColumn";
+import { handleClickOutSide } from "../../services/functions";
 
 const Space = () => {
   const location = useLocation()
@@ -22,18 +23,9 @@ const Space = () => {
   useEffect(()=>{
     getTasksBySpaceId(dispatch, spaceId)
     getSpaceById(dispatch, spaceId)
-    function handleClickOutside(event) {
-      if (taskDialogRef.current && !taskDialogRef.current.contains(event.target)) {
-        setAddTaskDialog(false)
-      }
-      if (addColumnRef.current && !addColumnRef.current.contains(event.target)) {
-        dispatch(setAddColumnOpen(false)) 
-       }
-    }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    handleClickOutSide(taskDialogRef, ()=>setAddTaskDialog(false))
+    handleClickOutSide(addColumnRef, ()=>dispatch(setAddColumnOpen(false)))
+
   },[spaceId, dispatch, taskDialogRef, addColumnRef])
   return (
 
@@ -42,7 +34,6 @@ const Space = () => {
     <div 
     className="mt-[2em] relative mx-auto w-[96%] border-[1px] border-[#f1f1f1] flex flex-col p-[20px] h-[100%]"
     >
-
       <h1
        className="mb-[1.5em] text-[1.2em]">Tasks</h1>
        {
