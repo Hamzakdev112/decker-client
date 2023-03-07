@@ -13,13 +13,8 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { SERVER_URL } from "../../config/config";
-import { getMe } from "../../apiCalls/userApis";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
-  const theme = useTheme();
-
-
-  const colors = tokens(theme.palette.mode);
   return (
     <MenuItem
       active={selected === title}
@@ -43,7 +38,7 @@ const Sidebar = () => {
   const [selected, setSelected] = useState("Dashboard");
   const handleLogout = async()=>{
     try{
-      const {data} = await axios.get(`${SERVER_URL}/api/users/logout`, {
+       await axios.get(`${SERVER_URL}/api/users/logout`, {
         withCredentials:true
       })
       window.location.reload()
@@ -136,9 +131,10 @@ const Sidebar = () => {
             {
               mySpaces?.map((space)=>(
                 <Item
+                key={space._id}
                 title={space.name}
                 to={`/space/${space._id}/list`}
-                icon={<img src="/assets/images.png" />}
+                icon={<img src="/assets/images.png" alt="test" />}
                 selected={selected}
                 setSelected={setSelected}
                 />

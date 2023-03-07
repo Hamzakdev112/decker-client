@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import produce from 'immer';
 
 
 const taskSlice = createSlice({
@@ -20,8 +21,15 @@ const taskSlice = createSlice({
             state.error = action.payload
             state.isFetching = false
         },
+        updateStatus:(state,action)=>{
+            const {id,status} = action.payload
+            return produce(state,(draftState)=>{
+                const index = draftState.tasksBySpaceId.findIndex((task) =>task._id === id);
+                draftState.tasksBySpaceId[index].status = status
+            })
+        }
     }
 })
 
-export const {getTasksBySpaceIdStart, getTasksBySpaceIdSuccess, getTasksBySpaceIdFailure} = taskSlice.actions
+export const {getTasksBySpaceIdStart, getTasksBySpaceIdSuccess, getTasksBySpaceIdFailure, updateStatus} = taskSlice.actions
 export default taskSlice.reducer

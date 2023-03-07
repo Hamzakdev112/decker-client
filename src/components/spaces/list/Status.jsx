@@ -2,48 +2,53 @@ import React from "react";
 import CircleIcon from "@mui/icons-material/Circle";
 import axios from "axios";
 import { SERVER_URL } from "../../../config/config";
-const StatusBar = ({ taskId,setOpenStatus }) => {
-  // const [isOpen, setisOpen] = useState(false);
-  // const handleOpen = (e) => {
-  //   e.preventDefault();
-  //   setisOpen((prev) => !prev);
-  // };
-  // const ref = useDetectClickOutside({ onTriggered: () => setisOpen(false) });
+import { useDispatch } from "react-redux";
+import { updateStatus } from "../../../redux/slices/taskSlice";
+import { toast } from "react-toastify";
+const StatusBar = ({ taskId,setOpenStatus,currentValue }) => {
+  const dispatch = useDispatch()
   const handleSubmit = async (value) => {
+    setOpenStatus(false)
+    dispatch(updateStatus({id:taskId, status:value}))
     try {
-      await axios.put(`${SERVER_URL}/api/workspace/tasks/update/${taskId}`, {
-        status: value,
-      },{
-        withCredentials:true
-      }); 
-      setOpenStatus(false)
-      
+      const {data} = await toast.promise(
+        axios.put(`
+      ${SERVER_URL}/api/workspace/tasks/update/${taskId}`,
+       {status: value,},
+      {withCredentials:true}),
+        {
+          pending: 'Updating',
+          success: 'Status Changed',
+          error: 'Error Occured'
+        },
+        {autoClose:2000}
+    );
     } catch (error) {
-      console.log(error);
+      toast.error('Error Occured')
     }
   };
 
   return (
     <div
       // ref={ref}
-      className="absolute items-start overflow-auto w-[200px] h-[200px] whitespace-nowrap min-h-[10px ] rounded-[5px]   flex-col z-10 bg-white gap-10"
+      className={`absolute mt-[10px] boxshadow p-3 items-start overflow-auto w-[auto] min-h-[100px] whitespace-nowrap  rounded-[5px]   flex-col z-10 bg-white gap-10`}
     >
       <div
-        className="flex items-center gap-3 mb-2 hover:cursor-pointer"
+        className={`${currentValue === "IN PROGRESS" ? '!text-[black]': '!text-[#c2c2c2]'} flex hover:!text-[white]   hover:bg-[red]  transition-all duration-[0.3s] p-2 rounded-[5px] items-center gap-3 mb-2 hover:cursor-pointer`}
         onClick={() => handleSubmit("IN PROGRESS")}
       >
         <CircleIcon sx={{ color: "red" }} />
         <p>IN PROGRESS</p>
       </div>
       <div
-        className="flex items-center gap-3 mb-2 hover:cursor-pointer"
+        className={`flex ${currentValue === "FREEZE" ? '!text-[black]' : '!text-[#c2c2c2]'}   hover:!text-[white]   hover:bg-[#00ade2] transition-all duration-[0.3s]  p-2 rounded-[5px] items-center gap-3 mb-2 hover:cursor-pointer`}
         onClick={() => handleSubmit("FREEZE")}
       >
         <CircleIcon sx={{ color: "#00ade2" }} />
         <p>FREEZE</p>
       </div>
       <div
-        className="flex items-center gap-3 mb-2 hover:cursor-pointer"
+        className={`flex ${currentValue === "COMPLETED" ? '!text-[black]' : '!text-[#c2c2c2]'} hover:!text-[white]   hover:bg-[green] transition-all duration-[0.3s]  p-2 rounded-[5px] items-center gap-3 mb-2 hover:cursor-pointer`}
         onClick={() => handleSubmit("COMPLETED")}
       >
         <CircleIcon sx={{ color: "green" }} />

@@ -1,15 +1,13 @@
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { Outlet, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getTasksBySpaceId } from "../../apiCalls/tasksApis";
 import { getSpaceById } from "../../apiCalls/spacesApis";
 import Topbar from "../../scenes/global/Topbar";
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@material-ui/core';
+import { Dialog, DialogContent } from '@material-ui/core';
 import AddTask from "../AddTask";
 import { useState } from "react";
 import { useRef } from "react";
-import { useDetectClickOutside } from "react-detect-click-outside";
 import { setAddColumnOpen } from "../../redux/slices/spaceSlice";
 import AddColumn from "./list/AddColumn";
 

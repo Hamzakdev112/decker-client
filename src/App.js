@@ -1,7 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
-import Topbar from "./scenes/global/Topbar";
-import Sidebar from "./scenes/global/Sidebar";
 import Dashboard from "./scenes/dashboard";
 import Team from "./scenes/team";
 import Bar from "./scenes/bar";
@@ -10,8 +8,6 @@ import Line from "./scenes/line";
 import Pie from "./scenes/pie";
 import FAQ from "./scenes/faq";
 import Geography from "./scenes/geography";
-import { CssBaseline, ThemeProvider } from "@mui/material";
-import { ColorModeContext, useMode } from "./theme";
 import Calendar from "./scenes/calendar/calendar";
 import Home from "./pages/Home";
 import Account from "./pages/Account";
@@ -20,17 +16,18 @@ import { useDispatch, useSelector } from "react-redux";
 import Space from "./components/spaces/Space";
 import List from "./components/spaces/list/List";
 import Board from "./components/spaces/board/Board";
-
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css'
 function App() {
   const dispatch = useDispatch()
   const {user} = useSelector(state=>state.user)
-  console.log(user)
   useEffect(()=>{
        getMe(dispatch)
   }, [dispatch])
 
   return (
         <div>
+          <ToastContainer />
             <Routes>
               {
                 // user &&
