@@ -8,6 +8,7 @@ import Space from "./components/spaces/Space";
 import List from "./components/spaces/list/List";
 import Board from "./components/spaces/board/Board";
 import { ToastContainer } from "react-toastify";
+import CreateSpace from "../src/components/spaces/createspace/CreateSpace"
 import 'react-toastify/dist/ReactToastify.css'
 function App() {
   const dispatch = useDispatch()
@@ -27,10 +28,13 @@ function App() {
               <Route path="space/:id" element={<Space />}>
                 <Route path="list" element={<List />} />
                 <Route path="board" element={<Board />} />
+                
               </Route>
+              <Route path="createSpace" element={<CreateSpace />}/>
             </Route>
             }
               <Route path="*" element={<h1>path not found</h1>}/>
+
             { <Route path="/account" element={<Account />} />}
             </Routes>
         </div>

@@ -123,7 +123,7 @@ const Sidebar = () => {
             </Typography>
             <Item
               title="Create Space"
-              to="/team"
+              to="/createSpace"
               icon={<AddCircleOutlineOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
