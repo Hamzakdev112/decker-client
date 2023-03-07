@@ -13,7 +13,7 @@ const StatusBar = ({ taskId,setOpenStatus,currentValue }) => {
     try {
       const {data} = await toast.promise(
         axios.put(`
-      ${SERVER_URL}/api/workspace/tasks/update/${taskId}`,
+      ${SERVER_URL}/api/workspace/tasks/update/status/${taskId}`,
        {status: value,},
       {withCredentials:true}),
         {

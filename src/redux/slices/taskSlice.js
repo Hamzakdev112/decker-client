@@ -27,9 +27,23 @@ const taskSlice = createSlice({
                 const index = draftState.tasksBySpaceId.findIndex((task) =>task._id === id);
                 draftState.tasksBySpaceId[index].status = status
             })
-        }
+        },
+        updatePriority:(state,action)=>{
+            const {id,priority} = action.payload
+            return produce(state,(draftState)=>{
+                const index = draftState.tasksBySpaceId.findIndex((task) =>task._id === id);
+                draftState.tasksBySpaceId[index].priority = priority
+            })
+        },
+        updateName:(state,action)=>{
+            const {id,name} = action.payload
+            return produce(state,(draftState)=>{
+                const index = draftState.tasksBySpaceId.findIndex((task) =>task._id === id);
+                draftState.tasksBySpaceId[index].name = name
+            })
+        },
     }
 })
 
-export const {getTasksBySpaceIdStart, getTasksBySpaceIdSuccess, getTasksBySpaceIdFailure, updateStatus} = taskSlice.actions
+export const {getTasksBySpaceIdStart, getTasksBySpaceIdSuccess, getTasksBySpaceIdFailure, updateStatus,updatePriority,updateName} = taskSlice.actions
 export default taskSlice.reducer

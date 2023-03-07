@@ -1,14 +1,5 @@
 import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
-import Dashboard from "./scenes/dashboard";
-import Team from "./scenes/team";
-import Bar from "./scenes/bar";
-import Form from "./scenes/form";
-import Line from "./scenes/line";
-import Pie from "./scenes/pie";
-import FAQ from "./scenes/faq";
-import Geography from "./scenes/geography";
-import Calendar from "./scenes/calendar/calendar";
 import Home from "./pages/Home";
 import Account from "./pages/Account";
 import { getMe } from "./apiCalls/userApis";
@@ -32,19 +23,11 @@ function App() {
               {
                 // user &&
                 <Route   path="/" element={user ?<Home /> : <Account />} >
-              <Route index  element={<Dashboard />} />
-              <Route path="team" element={<Team />} />
+              <Route index  element={<h1>test</h1>} />
               <Route path="space/:id" element={<Space />}>
                 <Route path="list" element={<List />} />
                 <Route path="board" element={<Board />} />
               </Route>
-              <Route path="form" element={<Form />} />
-              <Route path="bar" element={<Bar />} />
-              <Route path="pie" element={<Pie />} />
-              <Route path="line" element={<Line />} />
-              <Route path="faq" element={<FAQ />} />
-              <Route path="calendar" element={<Calendar />} />
-              <Route path="geography" element={<Geography />} />
             </Route>
             }
               <Route path="*" element={<h1>path not found</h1>}/>

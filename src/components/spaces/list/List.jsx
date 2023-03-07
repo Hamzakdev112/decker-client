@@ -1,17 +1,30 @@
 import { DataGrid } from "@mui/x-data-grid";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import moment from 'moment';
 import { setAddColumnOpen } from "../../../redux/slices/spaceSlice";
 import StatusBar from "./Status";
 import PriorityModal from "./Priority";
+import FlagIcon from "@mui/icons-material/Flag";
+import EditName from "./EditName";
+
 const List = () => {
   const { tasksBySpaceId } = useSelector((state) => state.tasks);
   const { singleSpace } = useSelector((state) => state.spaces);
+  const [editName, setEditName] = useState(false);
   const [openStatus, setOpenStatus] = useState(false);
   const [openPriority, setOpenPriority] = useState(false);
   const [rowId, setRowId] = useState(null); 
+  const handleKeyDown = (event)=>{
+    if (event.key === ' ') {
+        event.preventDefault(); // Prevent default behavior
+      }
+}
+const handleEditName = (params)=>{
+  setEditName(true)
+  setRowId(params.row._id)
+}
   const handleStatusOpen = (id)=>{
     setOpenStatus(prev=>!prev)
     setOpenPriority(false)
@@ -30,7 +43,13 @@ const List = () => {
         ...column,
         renderCell: (params) => {
           const value = params.value;
-          return <h1 className="">{value}</h1>;
+            return (
+              editName && params.row._id === rowId ?
+              <EditName taskId={params.row._id} setEditName={setEditName} value={value} />
+              :
+              <h1 className="">{value}</h1>
+              )
+             
         },
       });
     } else if (column.field === "assignee") {
@@ -91,17 +110,17 @@ const List = () => {
             <div className="">
               <span onClick={()=>handlePriorityOpen(params.row._id)}
                 className={`
-            p-[10px] rounded-[5px] w-[100px] flex justify-center !text-[white]
-            ${value === "Urgent" && "bg-[red]"} 
-            ${value === "High" && "bg-[#00ade2]"} 
-            ${value === "Normal" && "bg-[green]"} 
+            p-[10px] rounded-[5px] w-[100px] 
+            ${value === "Urgent" && "!text-[red]"} 
+            ${value === "High" && "!text-[#00ade2]"} 
+            ${value === "Normal" && "!text-[green]"} 
             `}
               >
-                {value}
+                <FlagIcon />
               </span>
               {openPriority &&
               params.row._id === rowId &&
-               <PriorityModal taskId={params.row._id} setOpenPriority={setOpenPriority} />
+               <PriorityModal taskId={params.row._id} currentValue={value} setOpenPriority={setOpenPriority} />
                }
             </div>
           );
@@ -146,6 +165,8 @@ const List = () => {
           columns={updatedColumns}
           disableColumnMenu
           disableSelectionOnClick
+          onCellKeyDown={handleKeyDown}
+          onRowDoubleClick={handleEditName}
         />
       )}
     </div>
