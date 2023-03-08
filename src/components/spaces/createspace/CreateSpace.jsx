@@ -9,6 +9,8 @@ import AddName from "./AddName";
 import AddColumns from "./AddColumns";
 import { useState } from 'react';
 import { useEffect } from 'react';
+import { createSpace } from '../../../apiCalls/spacesApis';
+import { useNavigate } from 'react-router-dom';
 const steps = ["Add Information", "Add Columns", 'Add members'];
 
 export default function CreateSpace() {
@@ -16,6 +18,7 @@ export default function CreateSpace() {
   const [component, setComponent] = useState(<AddName />);
   const [name, setName] = useState('')
   const [error, setError] = useState(null)
+  const navigate = useNavigate()
   const [description, setDescription] = useState('')
   const [columns, setColumns] = useState({
     priority:true,
@@ -25,6 +28,7 @@ export default function CreateSpace() {
     timer:false,
     name:true,
   })
+  console.log(columns)
   useEffect(()=>{
     switch (activeStep) {
       case 0:
@@ -101,7 +105,11 @@ return (
               Back
             </Button>
             <Box sx={{ flex: '1 1 auto' }} />
-            <Button onClick={handleNext}>
+            <Button onClick={
+              activeStep === steps.length - 1  ?()=> createSpace(name, description, columns, navigate) 
+              :
+              handleNext
+              }>
               {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
             </Button>
           </Box>
