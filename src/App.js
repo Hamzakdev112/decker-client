@@ -8,7 +8,7 @@ import Space from "./components/spaces/Space";
 import List from "./components/spaces/list/List";
 import Board from "./components/spaces/board/Board";
 import { ToastContainer } from "react-toastify";
-import CreateSpace from "../src/components/spaces/createspace/CreateSpace"
+import CreateSpace from "./components/spaces/createspace/CreateSpace"
 import 'react-toastify/dist/ReactToastify.css'
 function App() {
   const dispatch = useDispatch()
