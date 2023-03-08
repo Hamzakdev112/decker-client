@@ -8,69 +8,53 @@ import Typography from '@mui/material/Typography';
 import AddName from "./AddName";
 import AddColumns from "./AddColumns";
 import { useState } from 'react';
+import { useEffect } from 'react';
 const steps = ["Add Information", "Add Columns", 'Add members'];
 
 export default function CreateSpace() {
   const [activeStep, setActiveStep] = useState(0);
-  const set = new Set()
-  const [skipped, setSkipped] = useState(set.add(0));
-  const isStepOptional = (step) => {
-    return step === 1;
-  };
-
-  const isStepSkipped = (step) => {
-    return skipped.has(step);
-  };
-
   const [component, setComponent] = useState(<AddName />);
-
-  React.useEffect(()=>{
+  const [name, setName] = useState('')
+  const [error, setError] = useState(null)
+  const [description, setDescription] = useState('')
+  const [columns, setColumns] = useState({
+    priority:true,
+    assignee:true,
+    status:true,
+    dueDate:true,
+    timer:false,
+    name:true,
+  })
+  useEffect(()=>{
     switch (activeStep) {
       case 0:
-        setComponent(<AddName />)
+        setComponent(<AddName setName={setName} setDescription={setDescription}  />)
         break;
       case 1:
-        setComponent(<AddColumns />)
+        setComponent(<AddColumns setColumns={setColumns} />)
         break;
         case 2:
           setComponent(<h1>Helo</h1>)
       default:
         break;
     }
-    
-
-
   },[activeStep])
 
-
   const handleNext = () => {
-    // let newSkipped = skipped;
-    // if (isStepSkipped(activeStep)) {
-    //   newSkipped = new Set(newSkipped.values());
-    //   newSkipped.delete(activeStep);
-    // }
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    if(name.length < 5 && description.length < 20 && activeStep === 0){
+      setError('please enter name and description')
+    }
+    else{
+      setActiveStep((prev)=>prev +1);
+      setError(null)
+    }
+    
 
-    // setSkipped(newSkipped);
   };
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
-
-  const handleSkip = () => {
-    if (!isStepOptional(activeStep)) {
-      throw new Error("You can't skip a step that isn't optional.");
-    }
-
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setSkipped((prevSkipped) => {
-      const newSkipped = new Set(prevSkipped.values());
-      newSkipped.add(activeStep);
-      return newSkipped;
-    });
-  };
-
   const handleReset = () => {
     setActiveStep(0);
   };
@@ -81,14 +65,6 @@ return (
         {steps.map((label, index) => {
           const stepProps = {};
           const labelProps = {};
-          if (isStepOptional(index)) {
-            labelProps.optional = (
-              <Typography variant="caption">Optional</Typography>
-            );
-          }
-          if (isStepSkipped(index)) {
-            stepProps.completed = false;
-          }
           return (
             <Step key={label} {...stepProps}>
               <StepLabel {...labelProps}>{label}</StepLabel>
@@ -111,6 +87,10 @@ return (
           <Typography sx={{ mt: 2, mb: 1 }}>
             {component}
           </Typography>
+          {
+            error && 
+            <div className='w-[90%] mx-auto'><span className='text-[red]'>{error}</span></div>
+          }
           <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
             <Button
               color="inherit"
@@ -121,12 +101,6 @@ return (
               Back
             </Button>
             <Box sx={{ flex: '1 1 auto' }} />
-            {isStepOptional(activeStep) && (
-              <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
-                Skip
-              </Button>
-            )}
-
             <Button onClick={handleNext}>
               {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
             </Button>

@@ -5,7 +5,7 @@ import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import LoopIcon from "@mui/icons-material/Loop";
 import AccessibilityNewIcon from "@mui/icons-material/AccessibilityNew";
 import TimelapseIcon from "@mui/icons-material/Timelapse";
-const AddColumns = () => {
+const AddColumns = ({setColumns}) => {
   return (
     <div className="relative mx-auto w-[70vw] border-[1px] border-[#f1f1f1] flex flex-col p-[20px] h-[100%]">
       <div className="flex flex-col gap-5 items-center">
