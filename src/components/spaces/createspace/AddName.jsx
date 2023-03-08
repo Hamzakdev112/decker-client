@@ -14,7 +14,7 @@ const AddName = () => {
               shrink: true,
             }}
             sx={{
-              width: "18em",
+              width: "30em",
             }}
           />
         </div>

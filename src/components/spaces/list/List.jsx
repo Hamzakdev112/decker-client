@@ -143,6 +143,7 @@ const columns = [{field:'name',sortable:false,width:450, headerName:'Name', rend
           disableColumnMenu
           disableSelectionOnClick
           checkboxSelection={false}
+          hideFooterPagination
           onCellDoubleClick={handleEditName}
         />
       )}

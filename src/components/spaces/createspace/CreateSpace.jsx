@@ -7,12 +7,13 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import AddName from "./AddName";
 import AddColumns from "./AddColumns";
+import { useState } from 'react';
 const steps = ["Add Information", "Add Columns", 'Add members'];
 
 export default function CreateSpace() {
-  const [activeStep, setActiveStep] = React.useState(0);
-  const [skipped, setSkipped] = React.useState(new Set());
-
+  const [activeStep, setActiveStep] = useState(0);
+  const set = new Set()
+  const [skipped, setSkipped] = useState(set.add(0));
   const isStepOptional = (step) => {
     return step === 1;
   };
@@ -21,32 +22,36 @@ export default function CreateSpace() {
     return skipped.has(step);
   };
 
-  const [component, setComponent] = React.useState(<AddName />);
-  const handleNext = () => {
-    let newSkipped = skipped;
-    if (isStepSkipped(activeStep)) {
-      newSkipped = new Set(newSkipped.values());
-      newSkipped.delete(activeStep);
-    }
-    let newComponent;
+  const [component, setComponent] = useState(<AddName />);
+
+  React.useEffect(()=>{
     switch (activeStep) {
       case 0:
-        newComponent = <AddName />;
+        setComponent(<AddName />)
         break;
       case 1:
-        newComponent = <AddColumns />;
+        setComponent(<AddColumns />)
         break;
         case 2:
-          newComponent =<AddColumns />
+          setComponent(<h1>Helo</h1>)
       default:
-        newComponent = component;
         break;
     }
+    
 
+
+  },[activeStep])
+
+
+  const handleNext = () => {
+    // let newSkipped = skipped;
+    // if (isStepSkipped(activeStep)) {
+    //   newSkipped = new Set(newSkipped.values());
+    //   newSkipped.delete(activeStep);
+    // }
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setSkipped(newSkipped);
-    setComponent(newComponent);
-    console.log(activeStep)
+
+    // setSkipped(newSkipped);
   };
 
   const handleBack = () => {

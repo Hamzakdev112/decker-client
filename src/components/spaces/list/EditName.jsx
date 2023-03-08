@@ -1,13 +1,10 @@
-import axios from 'axios'
 import React, { useEffect } from 'react'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { toast } from 'react-toastify'
-import { SERVER_URL } from '../../../config/config'
 import { updateName } from '../../../redux/slices/taskSlice'
-import { Input } from '@mui/material';
 import { useRef } from 'react'
 import { handleClickOutSide } from '../../../services/functions'
+import { updateTaskName } from '../../../apiCalls/tasksApis'
 
 
 const EditName = ({ value, taskId, setEditName}) => {
@@ -25,19 +22,7 @@ const handleKeyPress = (event) => {
     const handleSubmit = async ()=>{
         setEditName(false)
     dispatch(updateName({name: newName, id:taskId}))
-    const {data} = await toast.promise(
-        axios.put(
-            `${SERVER_URL}/api/workspace/tasks/update/name/${taskId}`,
-            {name: newName},
-            {withCredentials:true}
-            ),
-            {
-                pending: 'Updating',
-                success: 'Name Changed',
-                error: 'Error Occured'
-            },
-            {autoClose:2000}
-            )
+    updateTaskName(taskId, newName)
         }
         const buttonRef = useRef(null);
 
