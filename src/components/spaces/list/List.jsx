@@ -2,7 +2,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import moment from 'moment';
+import moment from "moment";
 import { setAddColumnOpen } from "../../../redux/slices/spaceSlice";
 import StatusBar from "./Status";
 import PriorityModal from "./Priority";
@@ -16,7 +16,7 @@ const List = () => {
   const [editName, setEditName] = useState(false);
   const [openStatus, setOpenStatus] = useState(false);
   const [openPriority, setOpenPriority] = useState(false);
-  const [rowId, setRowId] = useState(null); 
+  const [rowId, setRowId] = useState(null);
   const priorityRef = useRef()
   const statusRef = useRef()
   useEffect(()=>{
@@ -41,7 +41,6 @@ const handleEditName = (params)=>{
   }
   const dispatch = useDispatch();
 
-
 const NameCell = (params)=>{
   const value = params.value;
       return (
@@ -59,9 +58,9 @@ const StatusCell = (params)=>{
                   <span onClick={()=>handleStatusOpen(params.row._id)}
                     className={`
                 p-[10px] rounded-[5px] w-[100px] flex justify-center !text-[white]
-                ${value === "IN PROGRESS" && "bg-[red]"} 
-                ${value === "FREEZE" && "bg-[#00ade2]"} 
-                ${value === "COMPLETED" && "bg-[green]"} 
+                ${value === "IN PROGRESS" && "bg-[red]"}
+                ${value === "FREEZE" && "bg-[#00ade2]"}
+                ${value === "COMPLETED" && "bg-[green]"}
                 `}
                   >
                   {value}
@@ -73,7 +72,7 @@ const StatusCell = (params)=>{
                   </div>}
                 </div>
                 );
-  
+
 }
 
 const AssigneeCell = (params)=>{
@@ -97,13 +96,13 @@ const PriorityCell = (params)=>{
   return (
     <div
      className="">
-      
+
       <span onClick={()=>handlePriorityOpen(params.row._id)}
         className={`
-    p-[10px] rounded-[5px] w-[100px] 
-    ${value === "Urgent" && "!text-[red]"} 
-    ${value === "High" && "!text-[#00ade2]"} 
-    ${value === "Normal" && "!text-[green]"} 
+    p-[10px] rounded-[5px] w-[100px]
+    ${value === "Urgent" && "!text-[red]"}
+    ${value === "High" && "!text-[#00ade2]"}
+    ${value === "Normal" && "!text-[green]"}
     `}
       >
         <FlagIcon />
@@ -126,7 +125,6 @@ const PriorityCell = (params)=>{
     dueDate: DueDateCell,
     priority: PriorityCell,
   };
-  
 
   const columns = singleSpace?.columns?.map((column)=>({
     field:column,
@@ -174,5 +172,6 @@ columns?.unshift({field:'add', headerName:'add', sortable: false, renderHeader: 
     </div>
   );
 };
+
 
 export default List;

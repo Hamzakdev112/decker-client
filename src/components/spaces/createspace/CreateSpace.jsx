@@ -26,7 +26,9 @@ export default function CreateSpace() {
   const [name, setName] = useState('')
   const navigate = useNavigate()
   const [description, setDescription] = useState('')
-  const [columns, setColumns] = useState([])
+  const [columns, setColumns] = useState([
+    "priority","assignee","status","name","due date"
+  ])
   console.log(columns)
   // priority,assignee,status,dueDate,timer,name,
   useEffect(()=>{
