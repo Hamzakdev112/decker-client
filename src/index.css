@@ -38,3 +38,28 @@
     border-radius: 14px;
     border: 3px solid #ffffff;
   }
+
+  .MuiStepLabel-root{
+    flex-direction: column;
+    display: flex;
+    gap: 10px;
+  }
+  .MuiStepLabel-iconContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    border-radius: 50%;
+    background-color: rgb(194, 194, 194);
+    color: white;
+  }
+  .MuiStepLabel-label	{
+    display: flex;
+    background-color: white !important;
+  }
+  .Mui-active{
+background: #ff4b1f;
+background: -webkit-linear-gradient(to right, #1fddff, #ff4b1f);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to right, #1fddff, #ff4b1f); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+}

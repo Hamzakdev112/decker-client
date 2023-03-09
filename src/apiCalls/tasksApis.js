@@ -15,7 +15,7 @@ export const getTasksBySpaceId = async(dispatch, spaceId)=>{
     }
 }
 export const updateTaskName = async(taskId, newName)=>{
-    const {data} = await toast.promise(
+    await toast.promise(
         axios.put(
             `${SERVER_URL}/api/workspace/tasks/update/name/${taskId}`,
             {name: newName},

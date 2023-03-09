@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import produce from 'immer';
 
 
 const spaceSlice = createSlice({
@@ -32,6 +33,13 @@ const spaceSlice = createSlice({
         setAddColumnOpen:(state, action)=>{
             state.addColumnOpen = action.payload
         },
+        updateColumns:(state,action)=>{
+            const {id,columns} = action.payload
+            return produce(state,(draftState)=>{
+                // const index = draftState.singleSpace.columns.findIndex((column) =>column._id === id);
+                draftState.singleSpace.columns = [...columns]
+            })
+        },
     }
 })
 
@@ -42,6 +50,7 @@ export const {getAllSpacesStart,
         getSpaceByIdSuccess,
          getSpaceByIdFailure,
          setAddColumnOpen,
+         updateColumns,
 
 } = spaceSlice.actions
 export default spaceSlice.reducer

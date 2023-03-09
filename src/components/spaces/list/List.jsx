@@ -8,7 +8,6 @@ import StatusBar from "./Status";
 import PriorityModal from "./Priority";
 import FlagIcon from "@mui/icons-material/Flag";
 import EditName from "./EditName";
-import { TextField } from "@mui/material";
 import { handleClickOutSide } from "../../../services/functions";
 
 const List = () => {
@@ -42,55 +41,19 @@ const handleEditName = (params)=>{
   }
   const dispatch = useDispatch();
 
-const columns = [{field:'name',sortable:false,width:450, headerName:'Name', renderCell: (params) => {
-    const value = params.value;
+
+const NameCell = (params)=>{
+  const value = params.value;
       return (
         editName && params.row._id === rowId ?
         <EditName taskId={params.row._id} setEditName={setEditName} value={value} />
         :
         <h1 className="">{value}</h1>
-        )},},
-        {field:'assignee',sortable:false,width:70, headerName:'Assignee',renderCell: (params) => {
-          return <img alt="test" src={"/assets/user.png"} className="w-[30px] h-[30px]" />;
-        }, },
-        {field:'dueDate', sortable:false, headerName:'Due Date',renderCell: (params) => {
-          const { value } = params;
-          const overDue = new Date(value) > new Date(Date.now());
-          const date = moment(value)
-          const formattedDate = date.format('MMMM Do YYYY');
-          return (
-            <span className={overDue ? `text-[#6870fa]` : `text-[red]`}>
-              {value && formattedDate}
-            </span>
-          );
-        },},
-            {field:'priority',sortable:false, headerName: 'Priority',renderCell: (params) => {
-              const { value } = params;
-              return (
-                <div
-                 className="">
-                  
-                  <span onClick={()=>handlePriorityOpen(params.row._id)}
-                    className={`
-                p-[10px] rounded-[5px] w-[100px] 
-                ${value === "Urgent" && "!text-[red]"} 
-                ${value === "High" && "!text-[#00ade2]"} 
-                ${value === "Normal" && "!text-[green]"} 
-                `}
-                  >
-                    <FlagIcon />
-                  </span>
-                  {openPriority &&
-                  params.row._id === rowId &&
-                  <div ref={priorityRef}>
-                   <PriorityModal ref={priorityRef} taskId={params.row._id} currentValue={value} setOpenPriority={setOpenPriority} />
-                  </div>
-                   }
-                </div>
-              );
-            }, },
-            {field:'status',sortable:false,width:120, headerName:'status', renderCell: (params) => {
-              const { value } = params;
+        )
+}
+
+const StatusCell = (params)=>{
+  const { value } = params;
               return (
                 <div className="">
                   <span onClick={()=>handleStatusOpen(params.row._id)}
@@ -109,21 +72,82 @@ const columns = [{field:'name',sortable:false,width:450, headerName:'Name', rend
                    <StatusBar taskId={params.row._id} currentValue={value} setOpenStatus={setOpenStatus} />
                   </div>}
                 </div>
-                );},},
-            {field:'add', headerName:'add', sortable: false, renderHeader: () => {
-              return (
-                <button
-                  className=" hover:text-[#00ade2]  w-[20px] flex justify-center items-center p-2 h-[20px]"
-                  onClick={() => dispatch(setAddColumnOpen(true))}
-                >
-                  <AddCircleOutlineIcon
-                  sx={{fontSize:'15px'}}
-                  fontSize="inherit" />
-        
-                </button>
-              );
-            },},
-      ]
+                );
+  
+}
+
+const AssigneeCell = (params)=>{
+  return <img alt="test" src={"/assets/user.png"} className="w-[30px] h-[30px]" />;
+}
+
+const DueDateCell = (params)=>{
+  const { value } = params;
+          const overDue = new Date(value) > new Date(Date.now());
+          const date = moment(value)
+          const formattedDate = date.format('MMMM Do YYYY');
+          return (
+            <span className={overDue ? `text-[#6870fa]` : `text-[red]`}>
+              {value && formattedDate}
+            </span>
+          );
+}
+
+const PriorityCell = (params)=>{
+  const { value } = params;
+  return (
+    <div
+     className="">
+      
+      <span onClick={()=>handlePriorityOpen(params.row._id)}
+        className={`
+    p-[10px] rounded-[5px] w-[100px] 
+    ${value === "Urgent" && "!text-[red]"} 
+    ${value === "High" && "!text-[#00ade2]"} 
+    ${value === "Normal" && "!text-[green]"} 
+    `}
+      >
+        <FlagIcon />
+      </span>
+      {openPriority &&
+      params.row._id === rowId &&
+      <div ref={priorityRef}>
+       <PriorityModal ref={priorityRef} taskId={params.row._id} currentValue={value} setOpenPriority={setOpenPriority} />
+      </div>
+       }
+    </div>
+  );
+
+}
+
+  const columnCellMap = {
+    name: NameCell,
+    status: StatusCell,
+    assignee: AssigneeCell,
+    dueDate: DueDateCell,
+    priority: PriorityCell,
+  };
+  
+
+  const columns = singleSpace?.columns?.map((column)=>({
+    field:column,
+    headerName:column && column[0]?.toUpperCase() + column?.slice(1),
+    renderCell:columnCellMap[column],
+    width:column === "name" ? 400 : 120,
+    sortable:false,
+  }))
+
+columns?.unshift({field:'add', headerName:'add', sortable: false, renderHeader: () => {
+  return (
+    <button
+      className=" hover:text-[#00ade2]  w-[20px] flex justify-center items-center p-2 h-[20px]"
+      onClick={() => dispatch(setAddColumnOpen(true))}
+    >
+      <AddCircleOutlineIcon
+      sx={{fontSize:'15px'}}
+      fontSize="inherit" />
+    </button>
+  );
+},},)
 
   return (
     <div className="w-[100%] h-[100%]">

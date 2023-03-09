@@ -47,9 +47,27 @@ export const createSpace = async(name, description,columns, navigate)=>{
             },
             {autoClose:2000}
             )
-            navigate(`space/${data.space._id}/list`)
+            navigate(`/space/${data.space._id}/list`)
 
 }
+export const updateColumnsApi = async(column, spaceId)=>{
+    try{
+        const toastId = toast.info('Updating...', {autoClose:false, type:'pending'})
+        const {data} = await  axios.put(
+            `${SERVER_URL}/api/workspace/spaces/columns/update/${column}/${spaceId}`,
+            {},
+        {withCredentials:true}
+        )
+        toast.update(toastId, {
+            render: data.message,
+            type: toast.TYPE.SUCCESS,
+            autoClose: 2000,
+          });
+        return data
+            }catch(err){
+                toast.error('ERROR OCCURED', {autoClose:2000})
+            }   
+        }
 
 
 export const getMembers = async(spaceId, setMembers)=>{

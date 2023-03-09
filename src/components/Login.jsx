@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {  useRef, useState } from "react";
 import {
   Button,
   Container,
@@ -18,7 +18,7 @@ import {
 } from "..//styles/Login";
 import { CircularProgress } from "@mui/material";
 import { login } from "../apiCalls/userApis";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {

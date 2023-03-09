@@ -40,7 +40,7 @@ const Space = () => {
          <div
          ref={addColumnRef}
           className="rounded-[7px] bg-[white] z-[2] boxshadow w-[230px] top-0 right-0 absolute h-[700px]">
-          <AddColumn
+          <AddColumn spaceId={spaceId}
            />
       </div>
       }

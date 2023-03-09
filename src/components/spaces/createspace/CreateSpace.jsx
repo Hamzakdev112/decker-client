@@ -11,24 +11,24 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import { createSpace } from '../../../apiCalls/spacesApis';
 import { useNavigate } from 'react-router-dom';
-const steps = ["Add Information", "Add Columns", 'Add members'];
+import InfoIcon from '@mui/icons-material/Info';
+import ViewColumnIcon from '@mui/icons-material/ViewColumn';
+import GroupsIcon from '@mui/icons-material/Groups';
+import { toast } from 'react-toastify';
+const steps = [{
+  title:"Add Information", icon:<InfoIcon />},
+ {title:"Add Columns", icon:<ViewColumnIcon />},
+  {title:'Add members', icon:<GroupsIcon /> }];
 
 export default function CreateSpace() {
   const [activeStep, setActiveStep] = useState(0);
   const [component, setComponent] = useState(<AddName />);
   const [name, setName] = useState('')
-  const [error, setError] = useState(null)
   const navigate = useNavigate()
   const [description, setDescription] = useState('')
-  const [columns, setColumns] = useState({
-    priority:true,
-    assignee:true,
-    status:true,
-    dueDate:true,
-    timer:false,
-    name:true,
-  })
+  const [columns, setColumns] = useState([])
   console.log(columns)
+  // priority,assignee,status,dueDate,timer,name,
   useEffect(()=>{
     switch (activeStep) {
       case 0:
@@ -39,6 +39,7 @@ export default function CreateSpace() {
         break;
         case 2:
           setComponent(<h1>Helo</h1>)
+          break;
       default:
         break;
     }
@@ -46,11 +47,10 @@ export default function CreateSpace() {
 
   const handleNext = () => {
     if(name.length < 5 && description.length < 20 && activeStep === 0){
-      setError('please enter name and description')
+      toast.error('Enter Name And Description',{autoClose:1000})
     }
     else{
       setActiveStep((prev)=>prev +1);
-      setError(null)
     }
     
 
@@ -65,13 +65,13 @@ export default function CreateSpace() {
 
 return (
     <Box sx={{ width: '100%' }}>
-      <Stepper activeStep={activeStep} sx={{borderBottom:"1px solid #e0e0e0",height:"70px"}} >
-        {steps.map((label, index) => {
+      <Stepper className='w-[60%] mx-auto mt-5 mb-[2em]' activeStep={activeStep} >
+        {steps.map((step, index) => {
           const stepProps = {};
           const labelProps = {};
           return (
-            <Step key={label} {...stepProps}>
-              <StepLabel {...labelProps}>{label}</StepLabel>
+            <Step key={step} {...stepProps}>
+              <StepLabel  icon={step.icon} {...labelProps}><span className='p-1 bg-[white]'>{step.title}</span></StepLabel>
             </Step>
           );
         })}
@@ -91,10 +91,6 @@ return (
           <Typography sx={{ mt: 2, mb: 1 }}>
             {component}
           </Typography>
-          {
-            error && 
-            <div className='w-[90%] mx-auto'><span className='text-[red]'>{error}</span></div>
-          }
           <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
             <Button
               color="inherit"
