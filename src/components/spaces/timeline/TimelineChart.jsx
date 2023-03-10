@@ -49,7 +49,7 @@ const links = [{ source: 2, target: 1, type: 0 }];
           <h1
           className="mb-[1.5em] text-[1.2em]">{singleSpace?.name}</h1>
         <MaterialTheme>
-          <Gantt scales={scales} columns={columns} tasks={tasks} links={links} />
+          <Gantt scales={scales} columns={columns} tasks={tasks} links={links}  />
         </MaterialTheme>
           </>
         }
