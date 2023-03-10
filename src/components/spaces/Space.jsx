@@ -33,8 +33,7 @@ const Space = () => {
     <div 
     className="mt-[2em] relative mx-auto w-[96%] border-[1px] border-[#f1f1f1] flex flex-col p-[20px] h-[100%]"
     >
-      <h1
-       className="mb-[1.5em] text-[1.2em]">Tasks</h1>
+    
        {
         addColumnOpen &&
          <div

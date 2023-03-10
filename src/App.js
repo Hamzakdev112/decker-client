@@ -9,6 +9,7 @@ import List from "./components/spaces/list/List";
 import Board from "./components/spaces/board/Board";
 import { ToastContainer } from "react-toastify";
 import CreateSpace from "./components/spaces/createspace/CreateSpace"
+import TimelineChart from './components/spaces/timeline/TimelineChart'
 import 'react-toastify/dist/ReactToastify.css'
 function App() {
   const dispatch = useDispatch()
@@ -19,7 +20,7 @@ function App() {
 
   return (
         <div>
-          <ToastContainer />
+          <ToastContainer  />
             <Routes>
               {
                 // user &&
@@ -36,6 +37,7 @@ function App() {
               <Route path="*" element={<h1>path not found</h1>}/>
 
             { <Route path="/account" element={<Account />} />}
+            { <Route path="/gantt" element={<TimelineChart />} />}
             </Routes>
         </div>
   );

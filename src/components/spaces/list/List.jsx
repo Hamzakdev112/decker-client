@@ -9,6 +9,9 @@ import PriorityModal from "./Priority";
 import FlagIcon from "@mui/icons-material/Flag";
 import EditName from "./EditName";
 import { handleClickOutSide } from "../../../services/functions";
+import Timer from "./Timer";
+import Tooltip from '@mui/material/Tooltip';
+
 
 const List = () => {
   const { tasksBySpaceId } = useSelector((state) => state.tasks);
@@ -83,7 +86,7 @@ const DueDateCell = (params)=>{
   const { value } = params;
           const overDue = new Date(value) > new Date(Date.now());
           const date = moment(value)
-          const formattedDate = date.format('MMMM Do YYYY');
+          const formattedDate = date.fromNow()
           return (
             <span className={overDue ? `text-[#6870fa]` : `text-[red]`}>
               {value && formattedDate}
@@ -105,7 +108,9 @@ const PriorityCell = (params)=>{
     ${value === "Normal" && "!text-[green]"}
     `}
       >
+        <Tooltip title={value} placement="top">
         <FlagIcon />
+        </Tooltip>
       </span>
       {openPriority &&
       params.row._id === rowId &&
@@ -117,6 +122,15 @@ const PriorityCell = (params)=>{
   );
 
 }
+const TimerCell = (params)=>{
+  return (
+    <div>
+      <Timer spaceId={singleSpace._id} id={params.row._id} />
+    </div>
+
+  );
+
+}
 
   const columnCellMap = {
     name: NameCell,
@@ -124,6 +138,7 @@ const PriorityCell = (params)=>{
     assignee: AssigneeCell,
     dueDate: DueDateCell,
     priority: PriorityCell,
+    timer:TimerCell,
   };
 
   const columns = singleSpace?.columns?.map((column)=>({
@@ -149,6 +164,8 @@ columns?.unshift({field:'add', headerName:'add', sortable: false, renderHeader: 
 
   return (
     <div className="w-[100%] h-[100%]">
+        <h1
+       className="mb-[1.5em] text-[1.2em]">Tasks</h1>
       {tasksBySpaceId && singleSpace && (
         <DataGrid
           sx={{
