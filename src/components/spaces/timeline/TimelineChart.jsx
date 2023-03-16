@@ -52,17 +52,10 @@ const links = [{ source: 2, target: 1, type: 0 }];
         {
           singleSpace && tasksBySpaceId &&
           <>
-        <MaterialTheme  >
-          {/* <div className="bg-[black]"> */}
-          <Gantt
-           config={config}
-           cellWidth={30}    
-           cellColor="blue"
-           scales={scales} 
-           columns={columns} 
-           tasks={tasks} 
-           links={links} />
-          {/* </div>   */}
+          <h1
+          className="mb-[1.5em] text-[1.2em]">{singleSpace?.name}</h1>
+        <MaterialTheme>
+          <Gantt scales={scales} columns={columns} tasks={tasks} links={links} />
         </MaterialTheme>
           </>
         }
