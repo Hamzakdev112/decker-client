@@ -30,6 +30,10 @@ const spaceSlice = createSlice({
             state.isFetching = false
             state.singleSpace = action.payload
         },
+        getSpaceByIdFailure:(state, action)=>{
+            state.isFetching = false
+            state.error = action.payload
+        },
         setAddColumnOpen:(state, action)=>{
             state.addColumnOpen = action.payload
         },

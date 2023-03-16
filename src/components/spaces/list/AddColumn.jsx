@@ -4,7 +4,7 @@ import { updateColumnsApi } from '../../../apiCalls/spacesApis';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateColumns } from '../../../redux/slices/spaceSlice';
 
-const AddColumn = ({}) => {
+const AddColumn = () => {
   const {singleSpace} = useSelector(state=>state.spaces)
   const dispatch = useDispatch()
   const handleUpdate = async(column)=>{
@@ -33,6 +33,11 @@ const AddColumn = ({}) => {
         <div className='cursor-pointer flex justify-between transition-all duration-300 rounded-[5px] hover:bg-[#ebebeb] p-[0.5em] w-[100%]'><button onClick={()=>handleUpdate('priority')} className='w-[100%] flex justify-start'>Prioirity</button>
         {
           singleSpace?.columns?.includes('priority') &&
+          <DoneIcon color='primary' fontSize='small' />
+        }</div>
+        <div className='cursor-pointer flex justify-between transition-all duration-300 rounded-[5px] hover:bg-[#ebebeb] p-[0.5em] w-[100%]'><button onClick={()=>handleUpdate('dueDate')} className='w-[100%] flex justify-start'>Due Date</button>
+        {
+          singleSpace?.columns?.includes('dueDate') &&
           <DoneIcon color='primary' fontSize='small' />
         }</div>
         <div className='cursor-pointer flex justify-between transition-all duration-300 rounded-[5px] hover:bg-[#ebebeb] p-[0.5em] w-[100%]'><button onClick={()=>handleUpdate('status')} className='w-[100%] flex justify-start'>Status</button>

@@ -1,7 +1,8 @@
 import { Gantt, MaterialTheme } from "@dhtmlx/trial-react-gantt";
+import moment from "moment";
  import {useSelector} from 'react-redux'
 
-export default function GanttBasic() {
+const TimelineChart = ()=> {
 
   const {tasksBySpaceId} = useSelector(state=>state.tasks)
   const {singleSpace} = useSelector(state=>state.spaces)
@@ -18,12 +19,17 @@ let tasks = [{
   id: 1,
   open: true,
   start_date: singleSpace?.createdAt,
-  end_date:'2023-04-01',
+  end_date: moment().add(3,'months').toDate(),
   duration: 8,
   text: "All Tasks",
   progress: 60,
   type: "project",
 }]
+const config = {
+  onTaskClick: ()=>{
+    console.log('hello')
+  }
+}
 
 for(let i=0;i<tasksBySpaceId?.length; i++){
   tasks.push({
@@ -34,25 +40,33 @@ for(let i=0;i<tasksBySpaceId?.length; i++){
     text:tasksBySpaceId[i].name,
     duration:10,
     progress:10,
-    type:'project'
-  })
+    type:'project',
+  }) 
 }
 console.log(tasks)
     
  
 const links = [{ source: 2, target: 1, type: 0 }];
     return (
-      <div className="h-[100vh]">
+      <div className="h-[70vh]">
         {
           singleSpace && tasksBySpaceId &&
           <>
-          <h1
-          className="mb-[1.5em] text-[1.2em]">{singleSpace?.name}</h1>
-        <MaterialTheme>
-          <Gantt scales={scales} columns={columns} tasks={tasks} links={links} />
+        <MaterialTheme  >
+          {/* <div className="bg-[black]"> */}
+          <Gantt
+           config={config}
+           cellWidth={30}    
+           cellColor="blue"
+           scales={scales} 
+           columns={columns} 
+           tasks={tasks} 
+           links={links} />
+          {/* </div>   */}
         </MaterialTheme>
           </>
         }
       </div>
     );
 }
+export default TimelineChart

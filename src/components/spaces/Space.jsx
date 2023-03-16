@@ -1,16 +1,16 @@
+import { useState,useEffect,useRef } from "react";
+import { Dialog, DialogContent } from '@material-ui/core';
 import { Outlet, useLocation } from "react-router-dom";
-import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getTasksBySpaceId } from "../../apiCalls/tasksApis";
 import { getSpaceById } from "../../apiCalls/spacesApis";
-import Topbar from "../../scenes/global/Topbar";
-import { Dialog, DialogContent } from '@material-ui/core';
-import AddTask from "../AddTask";
-import { useState } from "react";
-import { useRef } from "react";
-import { setAddColumnOpen } from "../../redux/slices/spaceSlice";
-import AddColumn from "./list/AddColumn";
 import { handleClickOutSide } from "../../services/functions";
+import { setAddColumnOpen } from "../../redux/slices/spaceSlice";
+import AddTask from "../AddTask/AddTask";
+import AddColumn from "../spaces/list/AddColumn";
+import Topbar from "../navigations/Topbar";
+import CancelIcon from '@mui/icons-material/Cancel';
+
 
 const Space = () => {
   const location = useLocation()
@@ -18,14 +18,12 @@ const Space = () => {
   const [addTaskDialog,setAddTaskDialog] = useState(false)
   const {addColumnOpen} = useSelector(state=>state.spaces)
   const dispatch = useDispatch()
-  const taskDialogRef = useRef()
   const addColumnRef = useRef()
   useEffect(()=>{
     getTasksBySpaceId(dispatch, spaceId)
     getSpaceById(dispatch, spaceId)
-    handleClickOutSide(taskDialogRef, ()=>setAddTaskDialog(false))
     handleClickOutSide(addColumnRef, ()=>dispatch(setAddColumnOpen(false)))
-  },[spaceId, dispatch, taskDialogRef, addColumnRef])
+  },[spaceId, dispatch, addColumnRef])
   return (
 
     <>
@@ -47,18 +45,28 @@ const Space = () => {
       className="w-[100%] mx-auto text-sm h-[70vh]"
       >
         <Outlet/>
+
+        {/* Add Task Dialog */}
         <button onClick={()=>setAddTaskDialog(true)} className="fixed right-[30px] bottom-[30px] bg-[red] text-white p-[10px]">+  TASK</button>
         <Dialog
-
+        className="relative"
         open={addTaskDialog}
         >
+      <button onClick={()=>setAddTaskDialog(false)} className='absolute text-[red] hover:text-[#e04646] top-0 right-0 z-10'><CancelIcon /></button>
           <DialogContent
           className="overflow-x-hidden"
-          ref={taskDialogRef}>
+          >
             <AddTask setAddTaskDialog={setAddTaskDialog} spaceId={spaceId} />
           </DialogContent>
         </Dialog>
+
+        {/* -------------------------------------------------------------------------------- */}
+
+
       </div>
+          {/* <div className="absolute">
+          <SingleTaskDialog />
+          </div> */}
     </div>
 </>
   );

@@ -1,155 +1,57 @@
 import { DataGrid } from "@mui/x-data-grid";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import moment from "moment";
 import { setAddColumnOpen } from "../../../redux/slices/spaceSlice";
-import StatusBar from "./Status";
-import PriorityModal from "./Priority";
-import FlagIcon from "@mui/icons-material/Flag";
-import EditName from "./EditName";
-import { handleClickOutSide } from "../../../services/functions";
-import Timer from "./Timer";
-import Tooltip from '@mui/material/Tooltip';
-
+import SearchIcon from '@mui/icons-material/Search';
+import Loader from "../../loading/Loader";
+import Error from "./Error";
+import TuneIcon from '@mui/icons-material/Tune';
+import { getTasksBySpaceId } from "../../../apiCalls/tasksApis";
+import Filters from "./Filters";
+import NameCell from "./gridcells/NameCell";
+import StatusCell from "./gridcells/StatusCell";
+import AssigneeCell from "./gridcells/AssigneeCell";
+import DueDateCell from "./gridcells/DueDateCell";
+import PriorityCell from "./gridcells/PriorityCell";
+import TimerCell from "./gridcells/TimerCell";
+import CreatedAtCell from "./gridcells/CreatedAtCell";
+import UpdatedAtCell from "./gridcells/UpdatedCell";
+import AssignerCell from "./gridcells/AssignerCell";
 
 const List = () => {
-  const { tasksBySpaceId } = useSelector((state) => state.tasks);
-  const { singleSpace } = useSelector((state) => state.spaces);
-  const [editName, setEditName] = useState(false);
-  const [openStatus, setOpenStatus] = useState(false);
-  const [openPriority, setOpenPriority] = useState(false);
+  const { tasksBySpaceId, isFetching:tasksLoading, error:tasksError } = useSelector((state) => state.tasks);
+  const { singleSpace, isFetching:spaceLoading, error:spaceError } = useSelector((state) => state.spaces);
+  const [openFilters, setOpenFilters] = useState(false);
   const [rowId, setRowId] = useState(null);
-  const priorityRef = useRef()
-  const statusRef = useRef()
-  useEffect(()=>{
-    handleClickOutSide(priorityRef, ()=>setOpenPriority(false))
-    handleClickOutSide(statusRef, ()=>setOpenStatus(false))
-
-  }, [priorityRef, statusRef])
-
-const handleEditName = (params)=>{
-  setEditName(true)
-  setRowId(params.row._id)
-}
-  const handleStatusOpen = (id)=>{
-    setOpenStatus(prev=>!prev)
-    setOpenPriority(false)
-    setRowId(id)
-  }
-  const handlePriorityOpen = (id)=>{
-    setOpenPriority(prev=>!prev)
-    setOpenStatus(false)
-    setRowId(id)
-  }
+  const [searchInput, setSearchInput] = useState(null);
   const dispatch = useDispatch();
-
-const NameCell = (params)=>{
-  const value = params.value;
-      return (
-        editName && params.row._id === rowId ?
-        <EditName taskId={params.row._id} setEditName={setEditName} value={value} />
-        :
-        <h1 className="">{value}</h1>
-        )
-}
-
-const StatusCell = (params)=>{
-  const { value } = params;
-              return (
-                <div className="">
-                  <span onClick={()=>handleStatusOpen(params.row._id)}
-                    className={`
-                p-[10px] rounded-[5px] w-[100px] flex justify-center !text-[white]
-                ${value === "IN PROGRESS" && "bg-[red]"}
-                ${value === "FREEZE" && "bg-[#00ade2]"}
-                ${value === "COMPLETED" && "bg-[green]"}
-                `}
-                  >
-                  {value}
-                  </span>
-                  {openStatus &&
-                  params.row._id === rowId &&
-                  <div ref={statusRef}>
-                   <StatusBar taskId={params.row._id} currentValue={value} setOpenStatus={setOpenStatus} />
-                  </div>}
-                </div>
-                );
-
-}
-
-const AssigneeCell = (params)=>{
-  return <img alt="test" src={"/assets/user.png"} className="w-[30px] h-[30px]" />;
-}
-
-const DueDateCell = (params)=>{
-  const { value } = params;
-          const overDue = new Date(value) > new Date(Date.now());
-          const date = moment(value)
-          const formattedDate = date.fromNow()
-          return (
-            <span className={overDue ? `text-[#6870fa]` : `text-[red]`}>
-              {value && formattedDate}
-            </span>
-          );
-}
-
-const PriorityCell = (params)=>{
-  const { value } = params;
-  return (
-    <div
-     className="">
-
-      <span onClick={()=>handlePriorityOpen(params.row._id)}
-        className={`
-    p-[10px] rounded-[5px] w-[100px]
-    ${value === "Urgent" && "!text-[red]"}
-    ${value === "High" && "!text-[#00ade2]"}
-    ${value === "Normal" && "!text-[green]"}
-    `}
-      >
-        <Tooltip title={value} placement="top">
-        <FlagIcon />
-        </Tooltip>
-      </span>
-      {openPriority &&
-      params.row._id === rowId &&
-      <div ref={priorityRef}>
-       <PriorityModal ref={priorityRef} taskId={params.row._id} currentValue={value} setOpenPriority={setOpenPriority} />
-      </div>
-       }
-    </div>
-  );
-
-}
-const TimerCell = (params)=>{
-  return (
-    <div>
-      <Timer spaceId={singleSpace._id} id={params.row._id} />
-    </div>
-
-  );
-
+  
+const handleSearch = ()=>{
+  getTasksBySpaceId(dispatch,singleSpace?._id, searchInput)
 }
 
   const columnCellMap = {
-    name: NameCell,
-    status: StatusCell,
-    assignee: AssigneeCell,
-    dueDate: DueDateCell,
-    priority: PriorityCell,
-    timer:TimerCell,
+    name: (params)=><NameCell params={params} rowId={rowId} setRowId={setRowId} />,
+    status: (params)=><StatusCell params={params} rowId={rowId} setRowId={setRowId} />,
+    assignee: (params)=><AssigneeCell params={params} />,
+    dueDate: (params)=><DueDateCell params={params} />,
+    priority: (params)=><PriorityCell params={params} rowId={rowId} setRowId={setRowId} />,
+    timer:(params)=><TimerCell params={params} />,
+    createdAt:(params)=><CreatedAtCell params={params} />,
+    updatedAt:(params)=><UpdatedAtCell params={params} />,
+    assigner:(params)=><AssignerCell params={params} />
   };
 
   const columns = singleSpace?.columns?.map((column)=>({
     field:column,
     headerName:column && column[0]?.toUpperCase() + column?.slice(1),
     renderCell:columnCellMap[column],
-    width:column === "name" ? 400 : 120,
+    width:column === "name" ? 300 : column === "dueDate" ? 110 : 120,
     sortable:false,
   }))
 
-columns?.unshift({field:'add', headerName:'add', sortable: false, renderHeader: () => {
+columns?.push({field:'add', headerName:'add', sortable: false, renderHeader: () => {
   return (
     <button
       className=" hover:text-[#00ade2]  w-[20px] flex justify-center items-center p-2 h-[20px]"
@@ -161,14 +63,34 @@ columns?.unshift({field:'add', headerName:'add', sortable: false, renderHeader: 
     </button>
   );
 },},)
-
   return (
+    <>
+    {
+      spaceLoading || tasksLoading ? <Loader /> :
+      tasksError || spaceError ? <Error  />:
     <div className="w-[100%] h-[100%]">
-        <h1
-       className="mb-[1.5em] text-[1.2em]">Tasks</h1>
+      <div className="flex items-center mb-[1em] gap-[20px]">
+        <h1 className="text-[1.5em]">Tasks</h1>
+        <form onSubmit={handleSearch} className="flex border-[1px] border-[#c5bdbd] w-[200px] items-center rounded-[5px] h-[30px]">
+          <SearchIcon fontSize="small" />
+          <input onChange={(e)=>setSearchInput(e.target.value)} placeholder="Search tasks" className="focus:outline-none text-[12px]  w-[100%]" type="text" />
+          <button type="submit" className="hidden"></button>
+        </form>
+        <div  onClick={()=>setOpenFilters(prev=>!prev)} className="relative flex items-center gap-1 p-1 cursor-pointer rounded-[10px] hover:bg-[#d3d3d3]">
+          <TuneIcon sx={{fontSize:'18px'}} />
+          Filters
+          
+        </div>
+        {
+            openFilters && 
+            <div  >
+              <Filters setOpenFilters={setOpenFilters}    />
+            </div>
+          }
+        </div>
       {tasksBySpaceId && singleSpace && (
         <DataGrid
-          sx={{
+        sx={{
             border: 0,
             fontSize: "0.8em",
           }}
@@ -183,10 +105,12 @@ columns?.unshift({field:'add', headerName:'add', sortable: false, renderHeader: 
           disableSelectionOnClick
           checkboxSelection={false}
           hideFooterPagination
-          onCellDoubleClick={handleEditName}
+          autoWidth
         />
       )}
     </div>
+          }
+          </>
   );
 };
 

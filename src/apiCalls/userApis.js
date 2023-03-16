@@ -27,3 +27,17 @@ export const getMe = async(dispatch)=>{
         dispatch(getMeFailure(err))
     }
 }
+
+export const getUserByEmail = async(email,setUser,setLoading,setError)=>{
+        setLoading(true)
+    try{
+        const {data} = await axios.get(`${SERVER_URL}/api/users/byemail/${email}`,{withCredentials:true})
+        setUser(data.user)
+        setError(null)
+        setLoading(false)
+    }catch(err){
+        setError(err.response.data.message)   
+        setLoading(false)
+        setUser(null)
+    }
+}

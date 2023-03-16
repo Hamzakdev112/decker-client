@@ -13,7 +13,7 @@ const nameRef = useRef()
 useEffect(()=>{
   handleClickOutSide(nameRef, ()=>setEditName(false))
 }, [nameRef])
-const [newName, setNewName] = useState('')
+const [newName, setNewName] = useState(value)
 const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
       buttonRef.current.click();

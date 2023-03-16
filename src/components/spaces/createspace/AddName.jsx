@@ -1,7 +1,7 @@
 import * as React from "react";
 import TextField from "@mui/material/TextField";
 import { TextareaAutosize } from "@material-ui/core";
-const AddName = ({setName, setDescription}) => {
+const AddName = ({setName, setDescription,name,description}) => {
   return (
     <div className="relative mx-auto w-[70vw] border-[1px] border-[#f1f1f1] flex flex-col p-[20px] h-[100%]">
       <div className="flex gap-5 items-center flex-col">
@@ -9,6 +9,7 @@ const AddName = ({setName, setDescription}) => {
           <TextField
             onChange={(e) =>setName(e.target.value)}
             id="space-name"
+            defaultValue={name}
             label="Space Name"
             InputLabelProps={{
               shrink: true,
@@ -22,6 +23,7 @@ const AddName = ({setName, setDescription}) => {
           <TextareaAutosize
             onChange={(e) => setDescription(e.target.value)}
             maxRows={3}
+            defaultValue={description}
             placeholder="Description"
             style={{
               padding: "10px",

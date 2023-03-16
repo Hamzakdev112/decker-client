@@ -15,6 +15,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import ViewColumnIcon from '@mui/icons-material/ViewColumn';
 import GroupsIcon from '@mui/icons-material/Groups';
 import { toast } from 'react-toastify';
+import AddMembers from './AddMembers';
 const steps = [{
   title:"Add Information", icon:<InfoIcon />},
  {title:"Add Columns", icon:<ViewColumnIcon />},
@@ -26,21 +27,27 @@ export default function CreateSpace() {
   const [name, setName] = useState('')
   const navigate = useNavigate()
   const [description, setDescription] = useState('')
+  const [createdSpace, setCreatedSpace] = useState(null)
   const [columns, setColumns] = useState([
     "priority","assignee","status","name","due date"
   ])
-  console.log(columns)
-  // priority,assignee,status,dueDate,timer,name,
+  const handleCreateSpace =async ()=>{
+   const data = await createSpace(name, description, columns, navigate)
+   setCreatedSpace(data.space)
+   handleNext()
+  }
+
+
   useEffect(()=>{
     switch (activeStep) {
       case 0:
-        setComponent(<AddName setName={setName} setDescription={setDescription}  />)
+        setComponent(<AddName name={name} description={description} setName={setName} setDescription={setDescription}  />)
         break;
       case 1:
         setComponent(<AddColumns setColumns={setColumns} />)
         break;
         case 2:
-          setComponent(<h1>Helo</h1>)
+          setComponent(<AddMembers setCreatedSpace={setCreatedSpace} createdSpace={createdSpace} />)
           break;
       default:
         break;
@@ -48,14 +55,13 @@ export default function CreateSpace() {
   },[activeStep])
 
   const handleNext = () => {
-    if(name.length < 5 && description.length < 20 && activeStep === 0){
-      toast.error('Enter Name And Description',{autoClose:1000})
-    }
-    else{
+    name.length < 5 ?
+      toast.error('Name must be atleast 5 characters',{autoClose:1000})
+      : 
+     description.length < 20 ?
+      toast.error('Description must be atleast 20 characters',{autoClose:1000})
+      :
       setActiveStep((prev)=>prev +1);
-    }
-    
-
   };
 
   const handleBack = () => {
@@ -93,24 +99,30 @@ return (
           <Typography sx={{ mt: 2, mb: 1 }}>
             {component}
           </Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+          <div className='w-[60%] mx-auto flex justify-between'>
             <Button
               color="inherit"
               disabled={activeStep === 0}
               onClick={handleBack}
               sx={{ mr: 1 }}
-            >
+              >
               Back
             </Button>
             <Box sx={{ flex: '1 1 auto' }} />
-            <Button onClick={
-              activeStep === steps.length - 1  ?()=> createSpace(name, description, columns, navigate) 
+            <Button
+             className='!bg-[red] !text-[white] p-2'
+             onClick={
+               activeStep === steps.length - 2  ? handleCreateSpace 
+              : activeStep === steps.length - 1 ? ()=>navigate(`/space/${createdSpace._id}/list`)
               :
               handleNext
-              }>
-              {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+            }>
+              {
+                 activeStep === steps.length - 2 ? 'Create'
+               : activeStep === steps.length - 1 ? 'Skip'
+               : 'Next'}
             </Button>
-          </Box>
+                </div>
         </React.Fragment>
       )}
     </Box>

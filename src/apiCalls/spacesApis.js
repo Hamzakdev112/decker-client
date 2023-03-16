@@ -28,12 +28,12 @@ export const getSpaceById = async(dispatch, spaceId)=>{
         
     }catch(err){
         console.log(err)
-        dispatch(getSpaceByIdFailure(err))
+        dispatch(getSpaceByIdFailure(err.message))
     }
 }
 
 
-export const createSpace = async(name, description,columns, navigate)=>{
+export const createSpace = async(name, description,columns)=>{
     const {data} = await toast.promise(
         axios.post(
             `${SERVER_URL}/api/workspace/spaces/new`,
@@ -47,7 +47,7 @@ export const createSpace = async(name, description,columns, navigate)=>{
             },
             {autoClose:2000}
             )
-            navigate(`/space/${data.space._id}/list`)
+            return data
 
 }
 export const updateColumnsApi = async(column, spaceId)=>{
@@ -77,4 +77,16 @@ export const getMembers = async(spaceId, setMembers)=>{
         
     }catch(err){
     }
+}
+
+export const sendInviteToMember = async(spaceId,userId,email,setInvited)=>{
+    try{
+        const {data} = await axios.put(`${SERVER_URL}/api/workspace/spaces/invite/${spaceId}/${userId}/${email}`,{}, {withCredentials:true} )
+        console.log(data)
+        setInvited(true)
+    }catch(err){
+    }
+}
+export const verifyInvite = async(spaceId,token)=>{
+        return  axios.put(`${SERVER_URL}/api/workspace/spaces/verify/${spaceId}/${token}`,{}, {withCredentials:true} )
 }

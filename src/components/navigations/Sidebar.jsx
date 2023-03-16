@@ -3,7 +3,6 @@ import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
 import { Box, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
-import { tokens } from "../../theme";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
@@ -32,8 +31,6 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
 
 const Sidebar = () => {
   const {mySpaces} = useSelector(state=>state.spaces)
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
   const handleLogout = async()=>{
@@ -52,7 +49,8 @@ const Sidebar = () => {
         {
           height:'100%',
         "& .pro-sidebar-inner": {
-          background: `${colors.primary[400]} !important`,
+          height:'100%',
+          background: `white !important`,
         },
         "& .pro-icon-wrapper": {
           backgroundColor: "transparent !important",
@@ -116,7 +114,6 @@ const Sidebar = () => {
 
             <Typography
               variant="h6"
-              color={colors.grey[300]}
               sx={{ m: "15px 0 5px 20px" }}
             >
               Spaces
@@ -143,7 +140,6 @@ const Sidebar = () => {
 
             <Typography
               variant="h6"
-              color={colors.grey[300]}
               sx={{ m: "15px 0 5px 20px" }}
             >
               Account

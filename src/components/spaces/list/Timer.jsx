@@ -5,10 +5,12 @@ import moment from 'moment'
 import axios from 'axios'
 import { SERVER_URL } from '../../../config/config';
 import { toast } from "react-toastify"
+import { useSelector } from 'react-redux';
 
 function Timer({ id, spaceId }) {
-
-    const [timeFromDB, setTimeFromDB] = useState();
+    const {tasksBySpaceId} =  useSelector(state=>state.tasks)
+    const task = tasksBySpaceId?.filter((task)=> task._id === id)
+    const [timeFromDB, setTimeFromDB] = useState(task[0]?.timer);
     const now = moment()
     const elapsed = now.diff(timeFromDB, 'seconds')
     const formatted = moment.utc(elapsed * 1000).format('HH:mm:ss').toString()
@@ -17,9 +19,9 @@ function Timer({ id, spaceId }) {
         const { data } = await axios.get(`${SERVER_URL}/api/workspace/tasks/singletask/${spaceId}/${id}`, { withCredentials: true })
         setTimeFromDB(data.timer)
     }
-    useEffect(() => {
-        func()
-    }, [])
+    // useEffect(() => {
+    //     func()
+    // }, [])
     async function start() {
         await toast.promise(
             axios.put(`${SERVER_URL}/api/workspace/tasks/update/timer/${id}`, {
@@ -37,7 +39,9 @@ function Timer({ id, spaceId }) {
     async function reset() {
         await toast.promise(
             axios.put(`${SERVER_URL}/api/workspace/tasks/update/timer/${id}`, {
-                timer: null
+                timer: null,
+                savedTimers:{
+                }   
             }, { withCredentials: true }),
             {
                 pending: 'Stopping Timer',
@@ -45,13 +49,13 @@ function Timer({ id, spaceId }) {
                 error: 'Error Occured'
             },
             { autoClose: 1500 }
-        )
-        func()
-    }
-
-    useEffect(() => {
-        let interval = null;
-        if (timeFromDB) {
+            )
+            func()
+        }
+        
+        useEffect(() => {
+            let interval = null;
+            if (timeFromDB) {
             interval = setInterval(() => {
                 setSeconds(seconds => seconds + 1);
             }, 1000);

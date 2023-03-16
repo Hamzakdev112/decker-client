@@ -16,6 +16,7 @@ const taskSlice = createSlice({
         getTasksBySpaceIdSuccess:(state, action)=>{
             state.isFetching = false
             state.tasksBySpaceId = action.payload
+            state.error = null
         },
         getTasksBySpaceIdFailure:(state, action)=>{
             state.error = action.payload

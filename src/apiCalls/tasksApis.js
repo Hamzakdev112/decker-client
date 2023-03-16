@@ -5,13 +5,24 @@ import { getTasksBySpaceIdFailure, getTasksBySpaceIdStart, getTasksBySpaceIdSucc
 
 
 
-export const getTasksBySpaceId = async(dispatch, spaceId)=>{
+export const getTasksBySpaceId = async(dispatch, spaceId, search)=>{
     try{
         dispatch(getTasksBySpaceIdStart())
-    const {data} = await axios.get(`${SERVER_URL}/api/workspace/tasks/all/${spaceId}`, {withCredentials:true})
-        dispatch(getTasksBySpaceIdSuccess(data.tasks))
+        let data;
+        if(search){
+         data = await axios.get(`${SERVER_URL}/api/workspace/tasks/all/${spaceId}?search=${search}`, {withCredentials:true})
+        }
+        else{
+         data = await axios.get(`${SERVER_URL}/api/workspace/tasks/all/${spaceId}`, {withCredentials:true})
+        }
+        dispatch(getTasksBySpaceIdSuccess(data?.data.tasks))
     }catch(err){
-        dispatch(getTasksBySpaceIdFailure(err))
+        console.log(err)
+        err.response.data.message ? 
+        dispatch(getTasksBySpaceIdFailure(err.response.data.message))
+        :
+        dispatch(getTasksBySpaceIdFailure(err.message))
+
     }
 }
 export const updateTaskName = async(taskId, newName)=>{
