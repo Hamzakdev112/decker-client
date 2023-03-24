@@ -3,8 +3,8 @@ import PeopleIcon from '@mui/icons-material/People';
 import { getUserByEmail } from '../../../apiCalls/userApis';
 import { toast } from 'react-toastify';
 import { RingLoader } from 'react-spinners';
-import { useSelector } from 'react-redux';
 import { sendInviteToMember } from '../../../apiCalls/spacesApis';
+import Head from '../../Head';
 
 const AddMembers = ({createdSpace}) => {
     const [email, setEmail] = useState('')
@@ -18,7 +18,7 @@ const AddMembers = ({createdSpace}) => {
            return toast.error('Please enter email',{autoClose:2000})
         }
         setInvited(false)
-        getUserByEmail(email,setUser,setLoading,setError)
+        getUserByEmail(email,createdSpace?._id,setUser,setLoading,setError)
 
     }
 
@@ -26,10 +26,9 @@ const AddMembers = ({createdSpace}) => {
         sendInviteToMember(createdSpace?._id,user?._id,email,setInvited)
     }
 
-    const test = "63fdbc6733440441e9c19b4e"
-
   return (
     <div className='flex'>
+    <Head title={`${createdSpace?.name} - Members`} description="Create a new space" />
     <div className=' flex flex-col gap-3  mx-auto w-[60%] border-[1px] border-[#f1f1f1]  p-[20px] h-[100%]'>
         <p>Awesome! You have created a new Work Space. Let's invite some people to join our workspace</p>
         <span className='' >Search By Email</span>
@@ -43,9 +42,9 @@ const AddMembers = ({createdSpace}) => {
             loading ?
              <RingLoader size={50} /> :
              error ?
-             <div>
+             <span className='text-[red]'>
              {error}
-             </div> 
+             </span> 
              :
              user &&
              <div className='boxshadow justify-between h-[60px] w-[70%] p-4 flex items-center'>

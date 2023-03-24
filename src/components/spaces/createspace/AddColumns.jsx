@@ -6,6 +6,7 @@ import LoopIcon from "@mui/icons-material/Loop";
 import AccessibilityNewIcon from "@mui/icons-material/AccessibilityNew";
 import TimelapseIcon from "@mui/icons-material/Timelapse";
 import { Button } from "@mui/material";
+import Head from "../../Head";
 const AddColumns = ({setColumns}) => {
 
   const handleChange = (field,e)=>{
@@ -16,6 +17,7 @@ const AddColumns = ({setColumns}) => {
   }
   return (
     <div className="relative mx-auto w-[70vw] border-[1px] border-[#f1f1f1] flex flex-col p-[20px] h-[100%]">
+    <Head title={`Create Space - Columns`} description="Create a new space" />
       <div className="flex flex-col gap-5 items-center">
         <div className="flex gap-4 items-center">
           <Button onClick={()=>handleChange('priority')} className="flex items-center gap-2 border-[1px] border-[rgb(0,0,0)] w-[150px] p-1 h-[55px]">

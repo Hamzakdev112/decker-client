@@ -1,4 +1,3 @@
-import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import { Link, NavLink } from "react-router-dom";
@@ -18,13 +17,10 @@ const Topbar = () => {
           <NavLink to={`/space/${singleSpace?._id}/list`}>List</NavLink>
           <NavLink to={`/space/${singleSpace?._id}/board`}>Board</NavLink>
         </div>
-        <div>
-          <button className="w-[50px]">
-            <NotificationsOutlinedIcon />
-          </button>
-          <button className="w-[50px]">
+        <div className="">
+          <NavLink to={`/space/${singleSpace?._id}/settings`} className="w-[50px] mr-3">
             <SettingsOutlinedIcon />
-          </button>
+          </NavLink>
           <Link to="/account" className="w-[50px]">
             <PersonOutlinedIcon />
           </Link>

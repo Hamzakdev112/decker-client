@@ -28,10 +28,10 @@ export const getMe = async(dispatch)=>{
     }
 }
 
-export const getUserByEmail = async(email,setUser,setLoading,setError)=>{
+export const getUserByEmail = async(email,spaceId,setUser,setLoading,setError)=>{
         setLoading(true)
     try{
-        const {data} = await axios.get(`${SERVER_URL}/api/users/byemail/${email}`,{withCredentials:true})
+        const {data} = await axios.get(`${SERVER_URL}/api/workspace/spaces/byemail/${email}/${spaceId}`,{withCredentials:true})
         setUser(data.user)
         setError(null)
         setLoading(false)

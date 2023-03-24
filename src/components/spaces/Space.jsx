@@ -11,7 +11,6 @@ import AddColumn from "../spaces/list/AddColumn";
 import Topbar from "../navigations/Topbar";
 import CancelIcon from '@mui/icons-material/Cancel';
 
-
 const Space = () => {
   const location = useLocation()
   const spaceId = location.pathname.split('/')[2]
@@ -25,13 +24,11 @@ const Space = () => {
     handleClickOutSide(addColumnRef, ()=>dispatch(setAddColumnOpen(false)))
   },[spaceId, dispatch, addColumnRef])
   return (
-
     <>
     <Topbar />
     <div 
     className="mt-[2em] relative mx-auto w-[96%] border-[1px] border-[#f1f1f1] flex flex-col p-[20px] h-[100%]"
     >
-    
        {
         addColumnOpen &&
          <div
@@ -45,7 +42,6 @@ const Space = () => {
       className="w-[100%] mx-auto text-sm h-[70vh]"
       >
         <Outlet/>
-
         {/* Add Task Dialog */}
         <button onClick={()=>setAddTaskDialog(true)} className="fixed right-[30px] bottom-[30px] bg-[red] text-white p-[10px]">+  TASK</button>
         <Dialog

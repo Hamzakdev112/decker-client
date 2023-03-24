@@ -8,7 +8,7 @@ import Loader from "../../loading/Loader";
 import Error from "./Error";
 import TuneIcon from '@mui/icons-material/Tune';
 import { getTasksBySpaceId } from "../../../apiCalls/tasksApis";
-import Filters from "./Filters";
+import Filters from "../filters/Filters";
 import NameCell from "./gridcells/NameCell";
 import StatusCell from "./gridcells/StatusCell";
 import AssigneeCell from "./gridcells/AssigneeCell";
@@ -18,6 +18,7 @@ import TimerCell from "./gridcells/TimerCell";
 import CreatedAtCell from "./gridcells/CreatedAtCell";
 import UpdatedAtCell from "./gridcells/UpdatedCell";
 import AssignerCell from "./gridcells/AssignerCell";
+import Head from "../../Head";
 
 const List = () => {
   const { tasksBySpaceId, isFetching:tasksLoading, error:tasksError } = useSelector((state) => state.tasks);
@@ -34,12 +35,12 @@ const handleSearch = ()=>{
   const columnCellMap = {
     name: (params)=><NameCell params={params} rowId={rowId} setRowId={setRowId} />,
     status: (params)=><StatusCell params={params} rowId={rowId} setRowId={setRowId} />,
-    assignee: (params)=><AssigneeCell params={params} />,
     dueDate: (params)=><DueDateCell params={params} />,
     priority: (params)=><PriorityCell params={params} rowId={rowId} setRowId={setRowId} />,
     timer:(params)=><TimerCell params={params} />,
     createdAt:(params)=><CreatedAtCell params={params} />,
     updatedAt:(params)=><UpdatedAtCell params={params} />,
+    assignee: (params)=><AssigneeCell params={params} />,
     assigner:(params)=><AssignerCell params={params} />
   };
 
@@ -65,6 +66,7 @@ columns?.push({field:'add', headerName:'add', sortable: false, renderHeader: () 
 },},)
   return (
     <>
+      <Head title={`${singleSpace?.name} - List`} description={singleSpace?.description} />
     {
       spaceLoading || tasksLoading ? <Loader /> :
       tasksError || spaceError ? <Error  />:

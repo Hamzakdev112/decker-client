@@ -7,7 +7,9 @@ import Board from "../../components/spaces/board/Board";
 import List from "../../components/spaces/list/List";
 import CreateSpace from "../../components/spaces/createspace/CreateSpace";
 import VerifyInvite from "../../components/VerifyInvite";
-
+import Settings from "../../components/spaces/settings/Settings";
+import NotFound from "../../components/NotFound";
+import Test from "../../components/spaces/Test";
 
 function Routing() {
     const { user } = useSelector(state => state.user)
@@ -18,12 +20,13 @@ function Routing() {
                 <Route path="space/:id" element={<Space />}>
                 <Route path="list" element={<List />} />
                 <Route path="board" element={<Board />} />
+                <Route path="settings" element={<Settings />} />
             </Route>
                 <Route path="createSpace" element={<CreateSpace />} />
             </Route>
             
             <Route path="/spaces/invitation/:spaceId/:token" element={user ? <VerifyInvite />:<Account />} />
-            <Route path="*" element={<h1>path not found</h1>} />
+            <Route path="*" element={<Test />} />
         </Routes>
     );
 }

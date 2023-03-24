@@ -1,12 +1,12 @@
 import { Gantt, MaterialTheme } from "@dhtmlx/trial-react-gantt";
 import moment from "moment";
  import {useSelector} from 'react-redux'
+import BoardTooltip from '../board/BoardTooltip'
 
 const TimelineChart = ()=> {
-
   const {tasksBySpaceId} = useSelector(state=>state.tasks)
   const {singleSpace} = useSelector(state=>state.spaces)
-
+  
   const scales = [
     { unit: "month", step: 1, format: "MMMM yyy" },
     { unit: "day", step: 1, format: "d" },
@@ -24,12 +24,8 @@ let tasks = [{
   text: "All Tasks",
   progress: 60,
   type: "project",
+
 }]
-const config = {
-  onTaskClick: ()=>{
-    console.log('hello')
-  }
-}
 
 for(let i=0;i<tasksBySpaceId?.length; i++){
   tasks.push({
@@ -39,7 +35,9 @@ for(let i=0;i<tasksBySpaceId?.length; i++){
     start_date:tasksBySpaceId[i].createdAt,
     text:tasksBySpaceId[i].name,
     duration:10,
-    progress:10,
+    progress:tasksBySpaceId[i].status === "IN PROGRESS" ? 30 :tasksBySpaceId[i].status === "FREEZE" ? 0 : tasksBySpaceId[i].status === "COMPLETED" && 100  ,
+    status:tasksBySpaceId[i].status,
+    className:'ganttt',
     type:'project',
   }) 
 }
@@ -52,10 +50,18 @@ const links = [{ source: 2, target: 1, type: 0 }];
         {
           singleSpace && tasksBySpaceId &&
           <>
-          <h1
-          className="mb-[1.5em] text-[1.2em]">{singleSpace?.name}</h1>
+          {/* <h1
+          className="mb-[1.5em] text-[1.2em]">{singleSpace?.name}</h1> */}
         <MaterialTheme>
-          <Gantt scales={scales} columns={columns} tasks={tasks} links={links} />
+          <Gantt
+           cellWidth={50}  
+           scales={scales} 
+           columns={columns} 
+           tasks={tasks} 
+           links={links}
+           tooltip={(data)=><BoardTooltip data={data} />}
+           task_row_class="!bg-[blue]"
+           />
         </MaterialTheme>
           </>
         }
