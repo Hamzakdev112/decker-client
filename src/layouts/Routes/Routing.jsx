@@ -10,6 +10,7 @@ import VerifyInvite from "../../components/VerifyInvite";
 import Settings from "../../components/spaces/settings/Settings";
 import NotFound from "../../components/NotFound";
 import Test from "../../components/spaces/Test";
+import Roadmap from "../../pages/Roadmap";
 
 function Routing() {
     const { user } = useSelector(state => state.user)
@@ -26,6 +27,10 @@ function Routing() {
             </Route>
             
             <Route path="/spaces/invitation/:spaceId/:token" element={user ? <VerifyInvite />:<Account />} />
+            <Route path="/roadmap" element={<Roadmap />}>
+                {/* <Route index element={ />} /> */}
+                <Route path="test" element={<h1>test</h1>} />
+            </Route>
             <Route path="*" element={<Test />} />
         </Routes>
     );
