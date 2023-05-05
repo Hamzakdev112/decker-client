@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import Home from "../../pages/Home";
 import Account from "../../pages/Account";
 import Space from "../../components/spaces/Space";
-import Board from "../../components/spaces/board/Board";
 import List from "../../components/spaces/list/List";
 import CreateSpace from "../../components/spaces/createspace/CreateSpace";
 import VerifyInvite from "../../components/VerifyInvite";
@@ -11,8 +10,11 @@ import Settings from "../../components/spaces/settings/Settings";
 import NotFound from "../../components/NotFound";
 import Test from "../../components/spaces/Test";
 import Roadmap from "../../pages/Roadmap";
+import { lazy } from "react";
 
 function Routing() {
+    const Board = lazy(()=>import('../../components/spaces/board/Board'))
+    
     const { user } = useSelector(state => state.user)
     return (
         <Routes>
@@ -29,7 +31,6 @@ function Routing() {
             <Route path="/spaces/invitation/:spaceId/:token" element={user ? <VerifyInvite />:<Account />} />
             <Route path="/roadmap" element={<Roadmap />}>
                 {/* <Route index element={ />} /> */}
-                <Route path="test" element={<h1>test</h1>} />
             </Route>
             <Route path="*" element={<Test />} />
         </Routes>

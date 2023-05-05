@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
 import { Box, Typography, useTheme } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
@@ -12,13 +12,15 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { SERVER_URL } from "../../config/config";
+import { BarLoader } from "react-spinners";
+import Loader from "../loading/Loader";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   return (
     <MenuItem
       active={selected === title}
       style={{
-        color: '#494949',
+        color: 'white',
       }}
       onClick={() => setSelected(title)}
       icon={icon}
@@ -29,9 +31,8 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
   );
 };
 
-const Sidebar = () => {
-  const {mySpaces} = useSelector(state=>state.spaces)
-  const [isCollapsed, setIsCollapsed] = useState(false);
+const Sidebar = ({isSidebarCollapsed,setIsSidebarCollapsed}) => {
+  const {mySpaces, isFetching} = useSelector(state=>state.spaces)
   const [selected, setSelected] = useState("Dashboard");
   const handleLogout = async()=>{
     try{
@@ -44,121 +45,67 @@ const Sidebar = () => {
     }
   }
   return (
-    <Box
-      sx={
-        {
-          height:'100%',
-        "& .pro-sidebar-inner": {
-          height:'100%',
-          background: `white !important`,
-        },
-        "& .pro-icon-wrapper": {
-          backgroundColor: "transparent !important",
-        },
-        "& .pro-inner-item": {
-          padding: "5px 35px 5px 20px !important",
-        },
-        "& .pro-inner-item:hover": {
-          color: "#868dfb !important",
-        },
-        "& .pro-menu-item.active": {
-          color: "#6870fa !important",
-        },
-      }}
+    <div className={`overflow-hidden no-scrollbar hover:overflow-y-scroll  h-[100vh] ${isSidebarCollapsed ? "w-[50px]" : "w-[250px]"}  border-[#cccccc] border-r-[1px] fixed top[100px]`}
     >
-      <ProSidebar collapsed={isCollapsed}>
-        <Menu iconShape="square">
-          {/* LOGO AND MENU ICON */}
-          <MenuItem
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
-            style={{
-              margin: "10px 0 20px 0",
-              color: '#6e6e6e',
-            }}
-          >
-            {!isCollapsed && (
-              <div className="flex justify-center ">
-                <h1 className="text-[1.5em]">MONSTER</h1>
-                <button className="absolute right-[-1px] top-0 flex justify-center items-center w-[30px] h-[30px]"  onClick={() => setIsCollapsed(!isCollapsed)}>
-                  <CancelOutlinedIcon  />
-                </button>
+      {
+        !isSidebarCollapsed &&
+        <button onClick={()=>setIsSidebarCollapsed(true)} className="absolute right-0 top-0"><CancelOutlinedIcon sx={{stroke:'white', strokeWidth:'1px'}} /></button>
+      }
+        {
+        !isSidebarCollapsed ?
+      <div className="flex items-center  border-b-[1px] border-[#e5e7eb] ">
+        <img className="w-[80px] ml-[20px] aspect-square" src="/assets/logo.png" alt="" />
+        <h1 className="text-[1.7em] logo">DECKER</h1>
+      </div>
+      :
+      <div className="flex items-center justify-center mt-[20px]">
+        <button onClick={()=>setIsSidebarCollapsed(false)}><MenuOutlinedIcon /></button>
+      </div>
+      }
+      <div className={`w-[80%] mt-[20px] ${isSidebarCollapsed && "items-center"} flex flex-col gap-[20px] mx-auto`}>
+    <div>
+      {
+        !isSidebarCollapsed && 
+        <h1 className="text-[1.1em]">Spaces</h1>
+      }
+       <NavLink
+       to='/createspace'
+            className="flex gap-[12px] ml-[px]  mt-[7px] items-center"
+            >
+              <div  className="w-[35px]">
+              <AddCircleOutlineOutlinedIcon  />
               </div>
-            )}
-          </MenuItem>
-
-          {!isCollapsed && (
-            <Box mb="25px">
-              <Box display="flex" justifyContent="center" alignItems="center">
-                {/* <img
-                  alt="profile-user"
-                  width="100px"
-                  height="100px"
-                  src={`.`}
-                  style={{ cursor: "pointer" }}
-                /> */}
-              </Box>
-              <Box textAlign="center">
-              </Box>
-            </Box>
-          )}
-
-          <Box paddingLeft={isCollapsed ? undefined : "10%"}>
-            <Item
-              title="Dashboard"
-              to="/"
-              icon={<HomeOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-
-            <Typography
-              variant="h6"
-              sx={{ m: "15px 0 5px 20px" }}
+             {!isSidebarCollapsed && <span>New</span>}
+              </NavLink>
+      {
+        mySpaces && mySpaces.map((space)=>{
+          return (
+            <NavLink
+            key={space._id}
+            className={`flex gap-[12px] mt-[7px] items-center ${isFetching && "pointer-events-none"}`}
+            to={`/space/${space._id}/list`}
             >
-              Spaces
-            </Typography>
-            <Item
-              title="Create Space"
-              to="/createSpace"
-              icon={<AddCircleOutlineOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            {
-              mySpaces?.map((space)=>(
-                <Item
-                key={space._id}
-                title={space.name}
-                to={`/space/${space._id}/list`}
-                icon={<img src="/assets/images.png" alt="test" />}
-                selected={selected}
-                setSelected={setSelected}
-                />
-                ))
-              }
+              <img className="w-[35px]" src="/assets/images.png" alt="" />
+             {!isSidebarCollapsed && <span>{space.name}</span>}
+              </NavLink>
+          )
+        })
+      }
+      
+    </div>
 
-            <Typography
-              variant="h6"
-              sx={{ m: "15px 0 5px 20px" }}
-            >
-              Account
-            </Typography>
-            <Item
-              title="Profile"
-              to="/profile"
-              icon={<PersonOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <button
-            className="ml-[27px] text-[#4d4d4d] flex gap-3"
-            onClick={handleLogout}
-            > <LogoutIcon />LOGOUT</button>
-          </Box>
-        </Menu>
-      </ProSidebar>
-    </Box>
+    <div>
+    {
+        !isSidebarCollapsed && 
+        <h1 className="text-[1.1em]">Account</h1>
+      }
+            <NavLink className="flex gap-[12px] mt-[7px] items-center" to='/profile'><PersonOutlinedIcon  />{!isSidebarCollapsed && <span>Profile</span>}</NavLink>
+            < button className="flex gap-[12px] mt-[7px] items-center" onClick={handleLogout}><LogoutIcon  />{!isSidebarCollapsed && <span>Logout</span>}</button>
+    </div>
+
+
+      </div>
+    </div>
   );
 };
 

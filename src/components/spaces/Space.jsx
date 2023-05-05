@@ -10,6 +10,7 @@ import AddTask from "../AddTask/AddTask";
 import AddColumn from "../spaces/list/AddColumn";
 import Topbar from "../navigations/Topbar";
 import CancelIcon from '@mui/icons-material/Cancel';
+import { Suspense } from "react";
 
 const Space = () => {
   const location = useLocation()
@@ -41,7 +42,9 @@ const Space = () => {
       <div
       className="w-[100%] mx-auto text-sm h-[70vh]"
       >
+        <Suspense fallback="Loading">
         <Outlet/>
+        </Suspense>
         {/* Add Task Dialog */}
         <button onClick={()=>setAddTaskDialog(true)} className="fixed right-[30px] bottom-[30px] bg-[red] text-white p-[10px]">+  TASK</button>
         <Dialog
@@ -62,7 +65,7 @@ const Space = () => {
       </div>
           {/* <div className="absolute">
           <SingleTaskDialog />
-          </div> */}
+        </div> */}
     </div>
 </>
   );

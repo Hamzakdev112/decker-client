@@ -1,10 +1,6 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import Stepper from '@mui/material/Stepper';
-import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import AddName from "./AddName";
 import AddColumns from "./AddColumns";
 import { useState } from 'react';
@@ -12,14 +8,19 @@ import { useEffect } from 'react';
 import { createSpace } from '../../../apiCalls/spacesApis';
 import { useNavigate } from 'react-router-dom';
 import InfoIcon from '@mui/icons-material/Info';
+import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize';
 import ViewColumnIcon from '@mui/icons-material/ViewColumn';
 import GroupsIcon from '@mui/icons-material/Groups';
 import { toast } from 'react-toastify';
 import AddMembers from './AddMembers';
+import AddCustomizations from './AddCustomizations';
+import Steps from './Steps';
 const steps = [{
   title:"Add Information", icon:<InfoIcon />},
- {title:"Add Columns", icon:<ViewColumnIcon />},
-  {title:'Add members', icon:<GroupsIcon /> }];
+  {title:'Customizations', icon:<DashboardCustomizeIcon /> },
+  {title:"Add Columns", icon:<ViewColumnIcon />},
+  {title:'Add members', icon:<GroupsIcon /> },
+];
 
 export default function CreateSpace() {
   const [activeStep, setActiveStep] = useState(0);
@@ -28,6 +29,7 @@ export default function CreateSpace() {
   const navigate = useNavigate()
   const [description, setDescription] = useState('')
   const [createdSpace, setCreatedSpace] = useState(null)
+  const [color, setColor] = useState('red')
   const [columns, setColumns] = useState([
     "priority","assignee","status","name","due date"
   ])
@@ -44,9 +46,12 @@ export default function CreateSpace() {
         setComponent(<AddName name={name} description={description} setName={setName} setDescription={setDescription}  />)
         break;
       case 1:
-        setComponent(<AddColumns setColumns={setColumns} />)
+        setComponent(<AddCustomizations color={color} setColor={setColor} />)
         break;
-        case 2:
+      case 2:
+        setComponent(<AddColumns color={color} setColumns={setColumns} />)
+        break;
+        case 3:
           setComponent(<AddMembers setCreatedSpace={setCreatedSpace} createdSpace={createdSpace} />)
           break;
       default:
@@ -67,39 +72,21 @@ export default function CreateSpace() {
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
-  const handleReset = () => {
-    setActiveStep(0);
-  };
 
 return (
-    <Box sx={{ width: '100%' }}>
-      <Stepper className='w-[60%] mx-auto mt-5 mb-[2em]' activeStep={activeStep} >
+    <div className='w-[100%]'>
+      <div className='items-center flex gap-[10px] h-[70px] ml-[100px]' activeStep={activeStep} >
         {steps.map((step, index) => {
-          const stepProps = {};
-          const labelProps = {};
           return (
-            <Step key={step} {...stepProps}>
-              <StepLabel  icon={step.icon} {...labelProps}><span className='p-1 bg-[white]'>{step.title}</span></StepLabel>
-            </Step>
+            <Steps key={index} index={index} step={step} activeStep={activeStep} />
           );
         })}
-      </Stepper>
-      {activeStep === steps.length ? (
-        <React.Fragment>
-          <Typography sx={{ mt: 2, mb: 1 }}>
-            All steps completed - you&apos;re finished
-          </Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-            <Box sx={{ flex: '1 1 auto' }} />
-            <Button onClick={handleReset}>Reset</Button>
-          </Box>
-        </React.Fragment>
-      ) : (
-        <React.Fragment>
-          <Typography sx={{ mt: 2, mb: 1 }}>
+      </div>
+        <div>
+          <div className=''>
             {component}
-          </Typography>
-          <div className='w-[60%] mx-auto flex justify-between'>
+          </div>
+          <div className='w-[60%] mt-[30px] mx-auto flex justify-between'>
             <Button
               color="inherit"
               disabled={activeStep === 0}
@@ -109,8 +96,8 @@ return (
               Back
             </Button>
             <Box sx={{ flex: '1 1 auto' }} />
-            <Button
-             className='!bg-[red] !text-[white] p-2'
+            <button
+             className='!bg-[red] rounded-[7px] !text-[white] hover:!bg-[#bb0000] w-[80px] h-[30px]'
              onClick={
                activeStep === steps.length - 2  ? handleCreateSpace 
               : activeStep === steps.length - 1 ? ()=>navigate(`/space/${createdSpace._id}/list`)
@@ -121,10 +108,9 @@ return (
                  activeStep === steps.length - 2 ? 'Create'
                : activeStep === steps.length - 1 ? 'Skip'
                : 'Next'}
-            </Button>
+            </button>
                 </div>
-        </React.Fragment>
-      )}
-    </Box>
+        </div>
+    </div>
   );
 }

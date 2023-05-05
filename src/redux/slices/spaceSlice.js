@@ -18,6 +18,7 @@ const spaceSlice = createSlice({
         getAllSpacesSuccess:(state, action)=>{
             state.isFetching = false
             state.mySpaces = action.payload
+            state.error = false
         },
         getAllSpacesFailure:(state, action)=>{
             state.error = action.payload
@@ -29,6 +30,7 @@ const spaceSlice = createSlice({
         getSpaceByIdSuccess:(state, action)=>{
             state.isFetching = false
             state.singleSpace = action.payload
+            state.error = false
         },
         getSpaceByIdFailure:(state, action)=>{
             state.isFetching = false

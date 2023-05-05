@@ -1,7 +1,7 @@
 import React from 'react'
 import { BeatLoader } from 'react-spinners';
 
-const ProgressCircle = () => {
+const Loader = () => {
   return (
     <div className="flex h-[100%] w-[100%] justify-center items-center">
   <BeatLoader
@@ -9,9 +9,9 @@ const ProgressCircle = () => {
   loading={true} 
   size="20px"
   />      
-    // </div>
+  </div>
 
   )
 }
 
-export default ProgressCircle
+export default Loader

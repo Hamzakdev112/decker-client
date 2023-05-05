@@ -3,14 +3,14 @@ import { useState } from "react";
 import EditName from "../EditName";
 import EditIcon from '@mui/icons-material/Edit';
 
+const handleEditName = (id, setEditName, setRowId) => {
+  setEditName(true);
+  setRowId(id);
+};
 
 const NameCell = ({params, rowId, setRowId})=>{
     const [editName, setEditName] = useState(false);
     const value = params.value;
-    const handleEditName = (id)=>{
-        setEditName(true)
-        setRowId(id)
-      }
         return (
           <div className="w-[100%]">
         {
@@ -21,7 +21,7 @@ const NameCell = ({params, rowId, setRowId})=>{
           <h1 className="">{value}</h1>
           <Tooltip title="Rename">
           <button
-          onClick={()=>handleEditName(params.row._id)}
+          onClick={()=>handleEditName(params.row._id,setEditName,setRowId)}
           className="hover:text-[blue] name-edit hidden">
             <EditIcon sx={{fontSize:'15px'}} />
             </button>

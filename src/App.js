@@ -12,7 +12,16 @@ function App() {
 
   return (
         <div>
-          <ToastContainer  />
+          <ToastContainer
+          position="bottom-left"
+          autoClose={1000}
+          limit={10}
+          hideProgressBar
+          newestOnTop
+          closeOnClick
+          rtl={false}
+          theme="dark"
+          />
             <Routing />
         </div>
   );

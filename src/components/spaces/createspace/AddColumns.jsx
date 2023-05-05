@@ -1,63 +1,102 @@
 import * as React from "react";
 import FlagIcon from "@mui/icons-material/Flag";
-import Checkbox from "@mui/material/Checkbox";
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-import LoopIcon from "@mui/icons-material/Loop";
-import AccessibilityNewIcon from "@mui/icons-material/AccessibilityNew";
-import TimelapseIcon from "@mui/icons-material/Timelapse";
+import TitleIcon from '@mui/icons-material/Title';
+import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
+import SupervisorAccountOutlinedIcon from '@mui/icons-material/SupervisorAccountOutlined';
+import DonutLargeOutlinedIcon from '@mui/icons-material/DonutLargeOutlined';
+import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
+import TimerOutlinedIcon from '@mui/icons-material/TimerOutlined';
+import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import { Button } from "@mui/material";
 import Head from "../../Head";
-const AddColumns = ({setColumns}) => {
+import { useState } from "react";
+import { useSelector } from "react-redux";
 
-  const handleChange = (field,e)=>{
+const AddColumns = () => {
+  const {color} = useSelector((state)=>state.createSpace)
+  const columns = [
+    {name:'name', icon:<TitleIcon />},
+    {name:'priority', icon:<PriorityHighIcon />},
+    {name:'assigner', icon:<SupervisorAccountOutlinedIcon />},
+    {name:'assignee', icon:<PersonOutlinedIcon />},
+    {name:'status', icon:<DonutLargeOutlinedIcon />},
+    {name:'dueDate', icon:<CalendarTodayOutlinedIcon />},
+    {name:'timer', icon:<TimerOutlinedIcon />},
+]
+  const [dragging, setDragging] = React.useState(false);
+  const [draggedElement, setDraggedElement] = React.useState(null);
+  const [draggedColumn, setDraggedColumn] = React.useState(null);
+  console.log(draggedColumn)
+  const [selectedColumns, setSelectedColumns] = useState([])
+  console.log(selectedColumns)
+  const handleDragStart = (event, column) => {
+    setDraggedColumn(column)
+    setDragging(true);
+    setDraggedElement(event.target);
+  };
 
-    setColumns(prev=>[...prev,field])
+  const handleDragOver = (event) => {
+    event.preventDefault();
     
+  };
 
-  }
+  const handleDrop = (event) => {
+    event.preventDefault();
+    if (draggedElement) {
+      // Check if dropped in the second container
+      if (!selectedColumns.includes(draggedColumn) && event.currentTarget.classList.contains("create-space-selected-columns")) {
+        setSelectedColumns((prev) => [...prev, draggedColumn]);
+      }
+      else if (event.currentTarget.classList.contains("create-space-columns")) {
+        setSelectedColumns((prev) => prev.filter(p=> p != draggedColumn));
+      }
+      event.currentTarget.appendChild(draggedElement);
+      setDragging(false);
+      setDraggedElement(null);
+      setDraggedColumn(null);
+    }
+  };
+
   return (
-    <div className="relative mx-auto w-[70vw] border-[1px] border-[#f1f1f1] flex flex-col p-[20px] h-[100%]">
-    <Head title={`Create Space - Columns`} description="Create a new space" />
-      <div className="flex flex-col gap-5 items-center">
-        <div className="flex gap-4 items-center">
-          <Button onClick={()=>handleChange('priority')} className="flex items-center gap-2 border-[1px] border-[rgb(0,0,0)] w-[150px] p-1 h-[55px]">
-            <FlagIcon />
-            <p>Priority</p>
-            <Checkbox defaultChecked onChange={(e)=>handleChange('priority', e)} />
-          </Button>
-          <Button onClick={()=>handleChange('assignee')} className="flex items-center gap-2 border-[1px] border-[rgb(0,0,0)] w-[150px] p-1 h-[55px]">
-            <FlagIcon />
-            <p>Assignee</p>
-            <Checkbox defaultChecked onChange={(e)=>handleChange('assignee', e)} />
-          </Button>
-        </div>
-        <div className="flex gap-4 items-center ">
-          <Button onClick={()=>handleChange('status')} className="flex items-center gap-2 border-[1px] border-[rgb(0,0,0)] w-[150px] p-1 h-[55px]">
-            <LoopIcon />
-            <p>Status</p>
-            <Checkbox defaultChecked onChange={(e)=>handleChange('status', e)} />
-          </Button>
-          <Button onClick={()=>handleChange('dueDate')} className="flex items-center gap-2 border-[1px] border-[rgb(0,0,0)] w-[150px] p-1 h-[55px]">
-            <CalendarTodayIcon />
-            <p>Due Date</p>
-            <Checkbox defaultChecked onChange={(e)=>handleChange('dueDate', e)} />
-          </Button>
-        </div>
-
-        <div className="flex gap-4 items-center ">
-          <Button onClick={()=>handleChange('timer')} className="flex items-center gap-2 border-[1px] border-[rgb(0,0,0)] w-[150px] p-1 h-[55px]">
-            <TimelapseIcon />
-            <p>Timer</p>
-            <Checkbox onChange={(e)=>handleChange('timer', e)} />
-          </Button  >
-          <Button onClick={()=>handleChange('name')} className="flex items-center gap-2 border-[1px] border-[rgb(0,0,0)] w-[150px] p-1 h-[55px]">
-            <AccessibilityNewIcon />
-            <p>Name</p>
-            <Checkbox onChange={(e)=>handleChange('name', e)} defaultChecked />
-          </Button>
-        </div>
+    <div className="w-[100%]">
+      <h1 className="text-center mt-[30px] text-[1.3em] font-normal">Drag and drop columns.</h1>
+    <div className="w-[90%] mx-auto justify-center mt-[30px] flex gap-[50px]">
+      <Head title={`Create Space - Columns`} description="Create a new space" />
+      <div
+        className="w-[300px] relative py-[4em] flex flex-col min-h-[50px] p-[1em] items-center justify-center gap-[10px] boxshadow create-space-columns"
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
+        >
+        <h1 className="absolute top-[10px]">Columns</h1>
+        {
+          columns?.map((column)=>{
+            const {name, icon} = column
+            return (
+              <div
+              draggable
+              onDragStart={(e)=>handleDragStart(e,name)}
+              style={{borderColor:color}}
+              className={`cursor-move border-[1px] flex items-center justify-center gap-[30%] stroke-white stroke-[1px] text-[gray]   w-[90%]  h-[50px]  ${
+                dragging ? "opacity-50" : ""
+              }`}
+              >
+                <span className="w-[50px]">{name}</span>
+              <span>{icon}</span>
+              </div>
+              )
+            })
+        }
+      </div>
+      {/* Selected Columns Container */}
+      <div
+        className="w-[300px] relative py-[4em] flex flex-col min-h-[50px] p-[1em] items-center justify-center gap-[10px] boxshadow create-space-selected-columns"
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
+      >
+        <h1 className="absolute top-[10px]">Selected Columns</h1>
       </div>
     </div>
+        </div>
   );
 };
 
