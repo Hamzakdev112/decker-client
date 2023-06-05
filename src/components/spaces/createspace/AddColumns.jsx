@@ -10,11 +10,13 @@ import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import { Button } from "@mui/material";
 import Head from "../../Head";
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { addToSelectedColumns,removeFromSelectedColumns } from "../../../redux/slices/createSpace";
 
 const AddColumns = () => {
-  const {color} = useSelector((state)=>state.createSpace)
-  const columns = [
+  const {color,selectedColumns} = useSelector((state)=>state.createSpace)
+  
+  const [columns,setColumns] = useState([
     {name:'name', icon:<TitleIcon />},
     {name:'priority', icon:<PriorityHighIcon />},
     {name:'assigner', icon:<SupervisorAccountOutlinedIcon />},
@@ -22,17 +24,13 @@ const AddColumns = () => {
     {name:'status', icon:<DonutLargeOutlinedIcon />},
     {name:'dueDate', icon:<CalendarTodayOutlinedIcon />},
     {name:'timer', icon:<TimerOutlinedIcon />},
-]
+]) 
   const [dragging, setDragging] = React.useState(false);
-  const [draggedElement, setDraggedElement] = React.useState(null);
   const [draggedColumn, setDraggedColumn] = React.useState(null);
-  console.log(draggedColumn)
-  const [selectedColumns, setSelectedColumns] = useState([])
-  console.log(selectedColumns)
+  const dispatch = useDispatch()
   const handleDragStart = (event, column) => {
     setDraggedColumn(column)
     setDragging(true);
-    setDraggedElement(event.target);
   };
 
   const handleDragOver = (event) => {
@@ -42,21 +40,24 @@ const AddColumns = () => {
 
   const handleDrop = (event) => {
     event.preventDefault();
-    if (draggedElement) {
+    if (draggedColumn) {
       // Check if dropped in the second container
       if (!selectedColumns.includes(draggedColumn) && event.currentTarget.classList.contains("create-space-selected-columns")) {
-        setSelectedColumns((prev) => [...prev, draggedColumn]);
+        console.log(1)
+        dispatch(addToSelectedColumns(draggedColumn));
+        setColumns((prev=>prev.filter((c)=>c.name !== draggedColumn.name)))
       }
-      else if (event.currentTarget.classList.contains("create-space-columns")) {
-        setSelectedColumns((prev) => prev.filter(p=> p != draggedColumn));
+      else if (!columns.includes(draggedColumn) && event.currentTarget.classList.contains("create-space-columns")) {
+        console.log(2)
+        console.log(draggedColumn)
+        setColumns((prev)=>[...prev, draggedColumn])
+        dispatch(removeFromSelectedColumns(draggedColumn.name));
       }
-      event.currentTarget.appendChild(draggedElement);
       setDragging(false);
-      setDraggedElement(null);
       setDraggedColumn(null);
     }
   };
-
+  console.log(selectedColumns)
   return (
     <div className="w-[100%]">
       <h1 className="text-center mt-[30px] text-[1.3em] font-normal">Drag and drop columns.</h1>
@@ -74,7 +75,7 @@ const AddColumns = () => {
             return (
               <div
               draggable
-              onDragStart={(e)=>handleDragStart(e,name)}
+              onDragStart={(e)=>handleDragStart(e,column)}
               style={{borderColor:color}}
               className={`cursor-move border-[1px] flex items-center justify-center gap-[30%] stroke-white stroke-[1px] text-[gray]   w-[90%]  h-[50px]  ${
                 dragging ? "opacity-50" : ""
@@ -94,6 +95,24 @@ const AddColumns = () => {
         onDrop={handleDrop}
       >
         <h1 className="absolute top-[10px]">Selected Columns</h1>
+        {
+          selectedColumns?.map((column)=>{
+            const {name,icon} = column
+            return (
+              <div
+              draggable
+              onDragStart={(e)=>handleDragStart(e,column)}
+              style={{borderColor:color}}
+              className={`cursor-move border-[1px] flex items-center justify-center gap-[30%] stroke-white stroke-[1px] text-[gray]   w-[90%]  h-[50px]  ${
+                dragging ? "opacity-50" : ""
+              }`}
+              >
+                <span className="w-[50px]">{name}</span>
+              <span>{icon}</span>
+              </div>
+              )
+            })
+        }
       </div>
     </div>
         </div>

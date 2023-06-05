@@ -1,26 +1,26 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback,useMemo } from 'react';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import StopIcon from '@mui/icons-material/Stop';
 import moment from 'moment';
 import axios from 'axios';
 import { SERVER_URL } from '../../../config/config';
 import { toast } from 'react-toastify';
-
 function Timer({ id, spaceId, timer }) {
+  
   const [timeFromDB, setTimeFromDB] = useState(timer);
   const [formatted, setFormatted] = useState(
     timeFromDB
-      ? moment
-          .utc(moment().diff(moment(timeFromDB)))
-          .format('HH:mm:ss')
-          .toString()
-      : moment().format('00:00:00')
-  );
-
-  const func = useCallback(async () => {
-    const { data } = await axios.get(`${SERVER_URL}/api/workspace/tasks/singletask/${spaceId}/${id}`, { withCredentials: true })
-    setTimeFromDB(data.timer)
-  }, [id, spaceId]);
+    ? moment
+    .utc(moment().diff(moment(timeFromDB)))
+    .format('HH:mm:ss')
+    .toString()
+    : moment().format('00:00:00')
+    );
+    
+    const func = useCallback(async () => {
+      const { data } = await axios.get(`${SERVER_URL}/api/workspace/tasks/singletask/${spaceId}/${id}`, { withCredentials: true })
+      setTimeFromDB(data.timer)
+    }, [id, spaceId]);
 
   const start = useCallback(async()=>{
     await toast.promise(
@@ -62,7 +62,7 @@ function Timer({ id, spaceId, timer }) {
     let interval = null;
     if (timeFromDB) {
       interval = setInterval(() => {
-        const elapsed = moment().diff(moment(timeFromDB), 'seconds');
+        const elapsed = moment().utc().diff(moment(timeFromDB), 'seconds');
         setFormatted(moment.utc(elapsed * 1000).format('HH:mm:ss').toString());
       }, 1000);
     } else if (!timeFromDB && formatted !== moment().format('00:00:00')) {

@@ -44,6 +44,7 @@ justify-content: center;
 flex-direction: column;
 padding: 0 50px;
 height: 100%;
+width:100%;
 text-align: center;
 `;
 
@@ -91,8 +92,8 @@ margin-bottom: 4px  ;
 
 export const Button = styled.button`
    border-radius: 20px;
-   border: 1px solid #000d30;
-   background-color: #000d30;
+   border: 1px solid #d41a0c;
+   background-color: #d41a0c;
    color: #ffffff;
    font-size: 12px;
    font-weight: bold;
@@ -109,7 +110,7 @@ export const Button = styled.button`
    }
    &:hover{
     background-color: white;
-    color: #000d30;
+    color: #d41a0c;
    }
 `;
 export const GhostButton = styled(Button)`
@@ -138,8 +139,7 @@ ${props =>
 `;
 
 export const Overlay = styled.div`
-background: rgb(66,67,75);
-background: linear-gradient(90deg, rgba(66,67,75,1) 0%, rgba(19,13,28,1) 91%);
+background-color: #d4543f;
 color: white;
 position: relative;
 left: -100%;

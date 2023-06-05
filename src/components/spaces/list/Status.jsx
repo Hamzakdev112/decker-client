@@ -7,24 +7,25 @@ import { updateStatus } from "../../../redux/slices/taskSlice";
 import { toast } from "react-toastify";
 const StatusBar = ({ taskId,setOpenStatus,currentValue }) => {
   const { singleSpace} = useSelector((state) => state.spaces);
-  const statuses = singleSpace?.statuses
+  const {statuses} = singleSpace
   const dispatch = useDispatch()
   const handleSubmit = async (value) => {
     setOpenStatus(false)
     dispatch(updateStatus({id:taskId, status:value}))
     try {
-      const {data} = await toast.promise(
-        axios.put(`
+        const {data} = await axios.put(`
       ${SERVER_URL}/api/workspace/tasks/update/status/${taskId}`,
        {status: value,},
-      {withCredentials:true}),
-        {
-          pending: 'Updating',
-          success: 'Status Changed',
-          error: 'Error Occured'
-        },
-        {autoClose:2000}
-    );
+      {withCredentials:true})
+      toast.info(
+        <div>
+      <span className="text-[0.9em] text-[#575757]">STATUS: </span>
+        <span className="bg-[#e6e6e6] text-[#575757] rounded-[4px] text-[0.8em] p-1">{data.status}</span>
+        </div>
+      ,{
+        autoClose:2000,
+         type:'pending',
+})
     } catch (error) {
       toast.error('Error Occured')
     }

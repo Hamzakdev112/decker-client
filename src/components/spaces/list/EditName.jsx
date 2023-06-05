@@ -20,8 +20,10 @@ const handleKeyPress = (event) => {
     }
   };
     const handleSubmit = async ()=>{
+       dispatch(updateName({name: newName, id:taskId}))
+      setTimeout(()=>{
         setEditName(false)
-    dispatch(updateName({name: newName, id:taskId}))
+      },0)
     updateTaskName(taskId, newName)
         }
         const buttonRef = useRef(null);

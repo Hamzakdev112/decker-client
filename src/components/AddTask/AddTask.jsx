@@ -15,6 +15,7 @@ import DatePicker from 'react-date-picker';
 import {BeatLoader} from 'react-spinners'
 import { toast } from 'react-toastify';
 import { MenuItem } from '@mui/material';
+import { updateTasksList } from '../../redux/slices/taskSlice';
 
 
 export default function AddTask({spaceId, setAddTaskDialog}) {
@@ -45,7 +46,8 @@ export default function AddTask({spaceId, setAddTaskDialog}) {
       setLoading(false)
       setAddTaskDialog(false)
       toast.success('Task Added', {autoClose:2000})
-      getTasksBySpaceId(dispatch,spaceId)
+      console.log(data)
+      dispatch(updateTasksList(data.task))
     }catch(err){
       setError(err.response.data)
       setLoading(false)

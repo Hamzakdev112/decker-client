@@ -1,13 +1,14 @@
 import React from 'react'
-import { BeatLoader } from 'react-spinners';
+import { ScaleLoader } from 'react-spinners';
 
 const Loader = () => {
   return (
     <div className="flex h-[100%] w-[100%] justify-center items-center">
-  <BeatLoader
-  color={'#000000'} 
+  <ScaleLoader
+  color={'red'}
+  speedMultiplier={0.7}
   loading={true} 
-  size="20px"
+  size="60px"
   />      
   </div>
 

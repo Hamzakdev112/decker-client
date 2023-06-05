@@ -1,5 +1,5 @@
 import { DataGrid } from "@mui/x-data-grid";
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { setAddColumnOpen } from "../../../redux/slices/spaceSlice";
@@ -20,16 +20,18 @@ import UpdatedAtCell from "./gridcells/UpdatedCell";
 import AssignerCell from "./gridcells/AssignerCell";
 import Head from "../../Head";
 import { motion } from 'framer-motion'
+import { setSingleTaskDialogOpen } from "../../../redux/slices/taskSlice";
+
 const List = () => {
   const { tasksBySpaceId, isFetching: tasksLoading, error: tasksError } = useSelector((state) => state.tasks);
   const { singleSpace, isFetching: spaceLoading, error: spaceError } = useSelector((state) => state.spaces);
   const [openFilters, setOpenFilters] = useState(false);
   const [rowId, setRowId] = useState(null);
-  const [searchInput, setSearchInput] = useState(null);
+  const searchInputRef = useRef()
   const dispatch = useDispatch();
 
   const handleSearch = () => {
-    getTasksBySpaceId(dispatch, singleSpace?._id, searchInput)
+    getTasksBySpaceId(dispatch, singleSpace?._id, searchInputRef.current.value)
   }
 
   const columnCellMap = useMemo(() => ({
@@ -42,8 +44,8 @@ const List = () => {
     updatedAt: (params) => <UpdatedAtCell params={params} />,
     assignee: (params) => <AssigneeCell params={params} />,
     assigner: (params) => <AssignerCell params={params} />
-  }));
-
+  }),[singleSpace?.columns,rowId]);
+  
   const columns = singleSpace?.columns?.map((column) => ({
     field: column,
     headerName: column && column[0]?.toUpperCase() + column?.slice(1),
@@ -80,7 +82,7 @@ const List = () => {
                 <h1 className="text-[1.5em]">Tasks</h1>
                 <form onSubmit={handleSearch} className="flex border-[1px] border-[#c5bdbd] w-[200px] items-center rounded-[5px] h-[30px]">
                   <SearchIcon fontSize="small" />
-                  <input onChange={(e) => setSearchInput(e.target.value)} placeholder="Search tasks" className="focus:outline-none text-[12px]  w-[100%]" type="text" />
+                  <input ref={searchInputRef  }  placeholder="Search tasks" className="focus:outline-none text-[12px]  w-[100%]" type="text" />
                   <button type="submit" className="hidden"></button>
                 </form>
                 <div onClick={() => setOpenFilters(prev => !prev)} className="relative flex items-center gap-1 p-1 cursor-pointer rounded-[10px] hover:bg-[#d3d3d3]">
@@ -90,13 +92,9 @@ const List = () => {
                 </div>
                 {
                   openFilters &&
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.1 }} >
+                  <div>
                     <Filters setOpenFilters={setOpenFilters} />
-                  </motion.div>
+                  </div>
                 }
               </div>
               {tasksBySpaceId && singleSpace && (
@@ -114,11 +112,11 @@ const List = () => {
                   columns={columns}
                   disableColumnMenu
                   disableSelectionOnClick
-                  onCellClick={(params)=>console.log(params)}
+                  headerHeight={40}
                   checkboxSelection={false}
                   hideFooterPagination
                   autoHeight={true}
-                  onColumnHeaderClick={() => console.log('test')}
+                  onCellDoubleClick={() =>dispatch(setSingleTaskDialogOpen())}
                 />
               )}
             </div>

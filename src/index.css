@@ -12,15 +12,15 @@
 }
 .active{
     transition: 0.3s ease all;
-    color: red;
-    transform: scale(1.1);
+    background-color: #ebe8e8;
+    color: #d41a0c;
     /* background-color: rgb(60, 60, 78); */
 }
 
 .boxshadow{
-  box-shadow: 0px 0px 8px 0px rgba(143,143,143,0.75);
--webkit-box-shadow: 0px 0px 8px 0px rgba(143,143,143,0.75);
--moz-box-shadow: 0px 0px 8px 0px rgba(143,143,143,0.75);
+  box-shadow: 0px 0px 8px 0px rgba(22, 22, 22, 0.75) !important;
+-webkit-box-shadow: 0px 0px 8px 0px rgba(58, 58, 58, 0.75) !important;
+-moz-box-shadow: 0px 0px 8px 0px rgba(75, 75, 75, 0.75) !important;
 }
 
 /* ===== Scrollbar CSS ===== */
@@ -62,7 +62,7 @@
   .MuiStepLabel-label	{
     display: flex;
     background-color: white !important;
-  }
+  }k
   .Mui-active{
 background: #ff4b1f;
 background: -webkit-linear-gradient(to right, #1fddff, #ff4b1f);  /* Chrome 10-25, Safari 5.1-6 */
@@ -90,6 +90,12 @@ width: 100%;
   scrollbar-width: none;  /* Firefox */
 }
 
+.MuiDataGrid-columnHeader{
+  border-right: gray !important;
+  color: #575757 !important;
+  font-size: 1em !important;
+  background-color: rgb(243, 241, 241) !important;
+}
 
 
 

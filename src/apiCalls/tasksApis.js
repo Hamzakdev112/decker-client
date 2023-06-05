@@ -15,7 +15,7 @@ export const getTasksBySpaceId = async(dispatch, spaceId, search)=>{
         else{
          data = await axios.get(`${SERVER_URL}/api/workspace/tasks/all/${spaceId}`, {withCredentials:true})
         }
-        dispatch(getTasksBySpaceIdSuccess(data?.data.tasks))
+            dispatch(getTasksBySpaceIdSuccess(data?.data.tasks))
     }catch(err){
         console.log(err)
         err.response.data.message ? 
@@ -26,17 +26,33 @@ export const getTasksBySpaceId = async(dispatch, spaceId, search)=>{
     }
 }
 export const updateTaskName = async(taskId, newName)=>{
-    await toast.promise(
-        axios.put(
+       const {data} =  await axios.put(
             `${SERVER_URL}/api/workspace/tasks/update/name/${taskId}`,
             {name: newName},
             {withCredentials:true}
-            ),
-            {
-                pending: 'Updating',
-                success: 'Name Changed',
-                error: 'Error Occured'
-            },
-            {autoClose:2000}
             )
+            toast.info(
+                <div>
+              <span className="text-[0.9em] text-[#575757]">NAME: </span>
+                <span className="bg-[#e6e6e6] text-[#575757] rounded-[4px] text-[0.8em] p-1">{data.name}</span>
+                </div>
+              ,{
+                autoClose:2000,
+                 type:'pending',
+        })
+}
+export const deleteTask = async(taskId)=>{
+       const {data} =  await axios.delete(
+            `${SERVER_URL}/api/workspace/tasks/delete/${taskId}`,
+            {withCredentials:true}
+            )
+            toast.info(
+                <div>
+              <span className="text-[0.9em] text-[#575757]">DELETED: </span>
+                <span className="bg-[#e6e6e6] text-[#575757] rounded-[4px] text-[0.8em] p-1">{taskId}</span>
+                </div>
+              ,{
+                autoClose:2000,
+                 type:'pending',
+        })
 }

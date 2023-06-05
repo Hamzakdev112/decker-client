@@ -52,17 +52,21 @@ export const createSpace = async(name, description,columns)=>{
 }
 export const updateColumnsApi = async(column, spaceId)=>{
     try{
-        const toastId = toast.info('Updating...', {autoClose:false, type:'pending'})
+        // const toastId = toast.info('Updating...', {autoClose:false, type:'pending'})
         const {data} = await  axios.put(
             `${SERVER_URL}/api/workspace/spaces/columns/update/${column}/${spaceId}`,
             {},
         {withCredentials:true}
         )
-        toast.update(toastId, {
-            render: data.message,
-            type: toast.TYPE.SUCCESS,
-            autoClose: 2000,
-          });
+        // toast.update(toastId, {
+        //     render: data.message,
+        //     type: toast.TYPE.SUCCESS,
+        //     autoClose: 2000,
+        //   });
+        toast.info(data.message, {
+            autoClose:2000,
+             type:'pending',
+    })
         return data
             }catch(err){
                 toast.error('ERROR OCCURED', {autoClose:2000})

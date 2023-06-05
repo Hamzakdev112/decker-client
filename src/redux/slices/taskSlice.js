@@ -7,9 +7,16 @@ const taskSlice = createSlice({
     initialState:{
         isFetching:false,
         error:false,
-        tasksBySpaceId:null
+        tasksBySpaceId:null,
+        singeTaskDialogOpen:false
     },
     reducers:{
+        setSingleTaskDialogOpen:(state)=>{
+            state.singeTaskDialogOpen = true
+        },
+        setSingleTaskDialogOpen:(state)=>{
+            state.singeTaskDialogOpen = true
+        },
         getTasksBySpaceIdStart:(state)=>{
             state.isFetching = true
         },
@@ -22,6 +29,12 @@ const taskSlice = createSlice({
             state.error = action.payload
             state.tasksBySpaceId = null
             state.isFetching = false
+        },
+        updateTasksList:(state,action)=>{
+            const task = action.payload
+            return produce(state,(draftState)=>{
+                 draftState.tasksBySpaceId.unshift(task)
+            })
         },
         updateStatus:(state,action)=>{
             const {id,status} = action.payload
@@ -47,5 +60,5 @@ const taskSlice = createSlice({
     }
 })
 
-export const {getTasksBySpaceIdStart, getTasksBySpaceIdSuccess, getTasksBySpaceIdFailure, updateStatus,updatePriority,updateName} = taskSlice.actions
+export const {setSingleTaskDialogOpen,updateTasksList,getTasksBySpaceIdStart, getTasksBySpaceIdSuccess, getTasksBySpaceIdFailure, updateStatus,updatePriority,updateName} = taskSlice.actions
 export default taskSlice.reducer

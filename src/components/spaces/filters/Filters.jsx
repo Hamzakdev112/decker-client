@@ -11,7 +11,11 @@ const Filters = ({setOpenFilters}) => {
         handleClickOutSide(filtersRef, ()=>setOpenFilters(false))
     }, [filtersRef,setOpenFilters])
   return (
-    <div ref={filtersRef}  className='p-2 absolute top-[25px] left-[60px] w-[300px] h-[200px] boxshadow bg-[white] z-10'>
+    <div ref={filtersRef}  className='p-2 flex absolute top-[25px] left-[60px] min-w-[300px] h-[200px] boxshadow bg-[white] z-10'>
+      <StatusFilter />
+      <StatusFilter />
+      <StatusFilter />
+      <StatusFilter />
       <StatusFilter />
     </div>
   )

@@ -1,6 +1,6 @@
 import axios from "axios"
 import { SERVER_URL } from "../config/config"
-import { getMeFailure, getMeStart, getMeSuccess, loginFailure, loginStart, loginSuccess } from "../redux/slices/userSlice"
+import { getMeFailure, getMeStart, getMeSuccess, loginFailure, loginStart, loginSuccess, registerFailure, registerStart, registerSuccess } from "../redux/slices/userSlice"
 
 
 
@@ -18,6 +18,32 @@ export const login = async(dispatch, email, password, navigate)=>{
         dispatch(loginFailure(err))
     }
 }
+
+export const register = async(data,setRegisterLoading, setRegisterError,setRegisterMessage)=>{
+    try{
+        setRegisterLoading(true)
+        const payload = {
+            firstName: data.firstName,
+            lastName: data.lastName,
+            email: data.email,
+            phone: data.phone,
+            password: data.password,
+
+        }
+        const {data:response} = await axios.post(`${SERVER_URL}/api/users/register`,payload, {withCredentials:true})
+        setRegisterLoading(false)
+        setRegisterError(null)
+        setRegisterMessage(response.message)
+        // getMe(dispatch)
+    }catch(err){
+        setRegisterMessage(null)
+        setRegisterLoading(false)
+        setRegisterError(err.response.data)
+    }
+}
+
+
+
 export const getMe = async(dispatch)=>{
     try{
         dispatch(getMeStart())
